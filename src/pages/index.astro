@@ -1,6 +1,10 @@
 ---
 import '../styles/brand-tokens.css';
 import KuboIcon from '../components/ui/KuboIcon.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+	? import.meta.env.BASE_URL
+	: `${import.meta.env.BASE_URL}/`;
 ---
 
 <html lang="es">
@@ -13,8 +17,8 @@ import KuboIcon from '../components/ui/KuboIcon.astro';
 			name="description"
 			content="KUBO — la nueva web está en proceso. Seguimos diseñando y fabricando en Lima, Perú."
 		/>
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<link rel="icon" href={`${base}favicon.ico`} />
 		<title>KUBO — En construcción</title>
 		<script is:inline>
 			document.documentElement.classList.add('has-js');
@@ -35,7 +39,7 @@ import KuboIcon from '../components/ui/KuboIcon.astro';
 			<main class="content">
 				<img
 					class="logo"
-					src="/assets/logos/KUBO_Principal_Horizontal.svg"
+					src={`${base}assets/logos/KUBO_Principal_Horizontal.svg`}
 					alt="KUBO"
 					width="220"
 					height="57"
@@ -158,7 +162,7 @@ import KuboIcon from '../components/ui/KuboIcon.astro';
 		<style>
 			@font-face {
 				font-family: 'Space Grotesk';
-				src: url('/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf')
+				src: url('/KUBOLAB/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf')
 					format('truetype-variations');
 				font-style: normal;
 				font-weight: 300 700;
@@ -167,7 +171,7 @@ import KuboIcon from '../components/ui/KuboIcon.astro';
 
 			@font-face {
 				font-family: 'JetBrains Mono';
-				src: url('/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf')
+				src: url('/KUBOLAB/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf')
 					format('truetype-variations');
 				font-style: normal;
 				font-weight: 300 700;
