@@ -1,0 +1,26 @@
+---
+import KuboIcon from '../ui/KuboIcon.astro';
+import { activity } from '../../data/admin/dashboard.mock';
+---
+
+<article class="panel panel-activity reveal" style="--delay: 260ms">
+  <header class="panel-header">
+    <div>
+      <h2>Actividad</h2>
+    </div>
+    <button class="panel-action" type="button" aria-label="Filtrar actividad"><KuboIcon name="filter-list" size={17} /></button>
+  </header>
+
+  <div class="activity-list">
+    {activity.map((item) => (
+      <div class="activity-row">
+        <div class={`activity-icon tone-${item.tone}`} aria-hidden="true"><KuboIcon name={item.icon} size={18} /></div>
+        <div class="activity-copy">
+          <strong>{item.title}</strong>
+          <span>{item.meta}</span>
+        </div>
+        <time>{item.when}</time>
+      </div>
+    ))}
+  </div>
+</article>

@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import PrintersListWorkspace from '../../../components/admin/printers/PrintersListWorkspace.svelte';
+---
+
+<AdminLayout title="Equipos">
+  <PrintersListWorkspace client:load />
+</AdminLayout>

@@ -1,0 +1,31 @@
+---
+/**
+ * KuboIcon.astro
+ * Fuente oficial: Iconoir (estilo regular / lineal). Única fuente de iconografía del sistema.
+ *
+ * El mapa de iconos vive en `./icon-map.ts` (compartido con `KuboIcon.svelte` para que las
+ * islas Svelte reutilicen exactamente la misma fuente ?raw en vez de una segunda librería).
+ */
+import { sizedIconMarkup, type IconName } from './icon-map';
+
+export type { IconName };
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  label?: string;
+}
+
+const { name, size = 20, class: className, label: ariaLabel } = Astro.props;
+
+const markup = sizedIconMarkup(name, size);
+---
+
+<span
+  class={className}
+  style={`display:inline-flex; width:${size}px; height:${size}px;`}
+  aria-hidden={ariaLabel ? undefined : 'true'}
+  aria-label={ariaLabel}
+  set:html={markup}
+/>

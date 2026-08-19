@@ -1,0 +1,36 @@
+/* KUBO — Brand tokens */
+
+:root {
+  --kubo-carbon: #141414;
+  --kubo-ivory: #FCF9F4;
+  --kubo-red: #ED254E;
+  --kubo-blue: #98D7E0;
+
+  --font-kubo-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-kubo-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --kubo-cut-angle: 30deg;
+}
+
+/* Roles */
+.kubo-copy {
+  font-family: var(--font-kubo-sans);
+}
+
+.kubo-system {
+  font-family: var(--font-kubo-mono);
+}
+
+.kubo-cta-primary {
+  background: var(--kubo-carbon);
+  color: var(--kubo-ivory);
+}
+
+.kubo-accent {
+  color: var(--kubo-red);
+}
+
+.kubo-info {
+  color: var(--kubo-carbon);
+  background: var(--kubo-blue);
+}

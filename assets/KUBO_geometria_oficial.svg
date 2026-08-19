@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+<rect width="1600" height="1050" fill="#FCF9F4"/>
+<style>
+.t{font-family:Arial,sans-serif;fill:#141414}
+.m{font-family:"Courier New",monospace;fill:#141414}
+.s{stroke:#98D7E0;stroke-width:2;fill:none}
+.g{stroke:#D9E9EC;stroke-width:1;fill:none}
+</style>
+<text x="70" y="70" class="t" font-size="32" font-weight="700">KUBO · GEOMETRÍA OFICIAL</text>
+<text x="70" y="110" class="m" font-size="16">EXTRAÍDA DE LOS SVG MAESTROS</text>
+<line x1="70" y1="140" x2="1530" y2="140" stroke="#DDD9D3"/>
+
+<image href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FwYV8xIiBkYXRhLW5hbWU9IkNhcGEgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTA4MCAxMDgwIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjMTQxNDE0OwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICNlZDI1NGU7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTU2Ni4wNCwyOTcuMjRsLTIxNi4yOSwxMjQuODZjLTIuNzUsMS41OS00LjQ0LDQuNTItNC40NCw3LjY5djI0OS43M2MwLDMuMTcsMS42OSw2LjEsNC40NCw3LjY5bDExMS42OSw2NC40OGM1LjkyLDMuNDIsMTMuMzEtLjg1LDEzLjMxLTcuNjl2LTIzOS40OGMwLTMuMTcsMS42OS02LjEsNC40NC03LjY5bDIwNy40LTExOS43NGM1LjkyLTMuNDIsNS45Mi0xMS45NiwwLTE1LjM3bC0xMTEuNjgtNjQuNDhjLTIuNzUtMS41OS02LjEzLTEuNTktOC44NywwWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc1MS44MSwzOTkuNTRsMzAuMTksMTcuNDNjNS45MiwzLjQyLDUuOTIsMTEuOTYsMCwxNS4zN2wtMjA3LjQsMTE5Ljc0Yy0yLjc1LDEuNTktNC40NCw0LjUyLTQuNDQsNy42OXYyMzkuNDljMCw2LjgzLTcuNCwxMS4xLTEzLjMxLDcuNjlsLTMwLjItMTcuNDRjLTIuNzUtMS41OS00LjQ0LTQuNTItNC40NC03LjY5di0yNDkuNzNjMC0zLjE3LDEuNjktNi4xLDQuNDQtNy42OWwyMTYuMjktMTI0Ljg4YzIuNzUtMS41OSw2LjEzLTEuNTksOC44OCwwWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4zMSw0OTIuODR2MTg2LjY3YzAsMy4xNy0xLjY5LDYuMS00LjQ0LDcuNjlsLTE1OS45NSw5Mi4zNWMtNS45MiwzLjQyLTEzLjMxLS44NS0xMy4zMS03LjY5di0xODYuNjdjMC0zLjE3LDEuNjktNi4xLDQuNDQtNy42OWwxNTkuOTUtOTIuMzVjNS45Mi0zLjQyLDEzLjMxLjg1LDEzLjMxLDcuNjlaIi8+Cjwvc3ZnPg==" x="70" y="185" width="700" height="700"/>
+
+<!-- reference oblique -->
+<line x1="315" y1="358" x2="590" y2="199" class="s"/>
+<text x="610" y="225" class="m" font-size="17">30°</text>
+
+<!-- module bars -->
+<rect x="890" y="230" width="48" height="300" fill="#141414"/>
+<rect x="985" y="230" width="48" height="300" fill="#ED254E"/>
+<rect x="1080" y="230" width="48" height="300" fill="#141414"/>
+<line x1="938" y1="550" x2="985" y2="550" class="s"/>
+<line x1="1033" y1="550" x2="1080" y2="550" class="s"/>
+<text x="961" y="580" class="m" font-size="15" text-anchor="middle">≈ 1X</text>
+<text x="1056" y="580" class="m" font-size="15" text-anchor="middle">≈ 1X</text>
+<text x="1009" y="205" class="m" font-size="15" text-anchor="middle">BANDA CENTRAL ≈ 1X</text>
+
+<text x="860" y="660" class="t" font-size="25" font-weight="700">Módulo X</text>
+<text x="860" y="700" class="m" font-size="17">X ≈ 47.5 unidades vectoriales</text>
+<text x="860" y="735" class="m" font-size="17">Banda central ≈ 47.95 u</text>
+<text x="860" y="770" class="m" font-size="17">Separaciones ≈ 47.45–47.46 u</text>
+
+<text x="70" y="900" class="t" font-size="24" font-weight="700">REGLAS DERIVADAS</text>
+<text x="70" y="940" class="m" font-size="16">1. Los cortes del sistema gráfico usan la familia angular de 30°.</text>
+<text x="70" y="970" class="m" font-size="16">2. X nace del espacio interno del símbolo, no de una medida arbitraria.</text>
+<text x="70" y="1000" class="m" font-size="16">3. Los radios de interfaz no se copian del logo: sus remates son Bézier.</text>
+</svg>

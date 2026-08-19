@@ -1,0 +1,98 @@
+---
+import '../styles/brand-tokens.css';
+import '../styles/admin-core.css';
+import '../styles/admin-dashboard.css';
+import AdminNavigation from '../components/admin/AdminNavigation.svelte';
+import AdminHeader from '../components/admin/AdminHeader.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#000000" />
+    <title>{title} · KUBO Admin</title>
+  </head>
+
+  <body class="admin-body">
+    <div class="admin-shell" data-admin-shell>
+      <div class="sidebar-scrim" data-sidebar-scrim></div>
+
+      <AdminNavigation client:load currentPath={currentPath} />
+
+      <main class="admin-main">
+        <AdminHeader />
+
+        <div class="admin-content">
+          <slot />
+
+          <footer class="admin-footer">
+            <span>© 2026 KUBO. Interfaz administrativa.</span>
+            <span>HECHO EN LIMA, PERÚ.</span>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script is:inline>
+      // Nota de arquitectura: el colapso de escritorio, el drawer móvil, su overlay, el focus
+      // trap y el focus-restore de la navegación ahora los gestiona la isla Svelte
+      // AdminNavigation (src/components/admin/AdminNavigation.svelte) — este script ya no los
+      // toca. Lo que queda aquí es intencionalmente simple (no necesita estado reactivo ni
+      // overlay propio) por eso sigue en Astro/vanilla: la animación de entrada y los
+      // popovers de notificaciones/usuario del topbar.
+      const root = document.documentElement;
+      root.classList.add('has-js');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => document.body.classList.add('ui-ready'));
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          document.querySelectorAll('[data-popover-panel]:not([hidden])').forEach((panel) => {
+            panel.hidden = true;
+          });
+          document.querySelectorAll('[data-popover-trigger]').forEach((trigger) => {
+            trigger.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+
+      document.querySelectorAll('[data-popover]').forEach((popover) => {
+        const trigger = popover.querySelector('[data-popover-trigger]');
+        const panel = popover.querySelector('[data-popover-panel]');
+        if (!trigger || !panel) return;
+
+        trigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+
+          document.querySelectorAll('[data-popover-panel]').forEach((otherPanel) => {
+            if (otherPanel !== panel) otherPanel.hidden = true;
+          });
+          document.querySelectorAll('[data-popover-trigger]').forEach((otherTrigger) => {
+            if (otherTrigger !== trigger) otherTrigger.setAttribute('aria-expanded', 'false');
+          });
+
+          const willOpen = panel.hidden;
+          panel.hidden = !willOpen;
+          trigger.setAttribute('aria-expanded', String(willOpen));
+        });
+      });
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('[data-popover-panel]').forEach((panel) => (panel.hidden = true));
+        document.querySelectorAll('[data-popover-trigger]').forEach((trigger) => trigger.setAttribute('aria-expanded', 'false'));
+      });
+    </script>
+  </body>
+</html>

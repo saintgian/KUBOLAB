@@ -1,0 +1,53 @@
+---
+/**
+ * RadialGauge.astro
+ * Primitive estática (sin JS) para un anillo de progreso: track carbón muy tenue + arco activo
+ * con extremos redondeados, dato central centrado encima. Calcula el dasharray en build time —
+ * úsala solo para valores que no cambian por interacción del usuario (si un radial necesita
+ * reaccionar a hover/foco/estado en cliente, esa lógica vive en el donut de
+ * DashboardAnalytics.svelte, que sigue el mismo lenguaje visual pero no puede ser esta misma
+ * primitive porque Svelte anima el offset acumulado de varios segmentos, no un único arco fijo).
+ */
+interface Props {
+  percent: number;
+  size?: number;
+  strokeWidth?: number;
+  centerValue: string;
+  ariaLabel: string;
+}
+
+const { percent, size = 52, strokeWidth = 6, centerValue, ariaLabel } = Astro.props;
+
+const clamped = Math.max(0, Math.min(100, percent));
+const radius = size / 2 - strokeWidth / 2;
+const circumference = 2 * Math.PI * radius;
+const arcLength = (clamped / 100) * circumference;
+---
+
+<div class="radial-gauge" style={`--rg-size:${size}px`}>
+  <svg
+    class="radial-gauge-svg"
+    viewBox={`0 0 ${size} ${size}`}
+    role="img"
+    aria-label={ariaLabel}
+  >
+    <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
+      <circle
+        class="radial-gauge-track"
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke-width={strokeWidth}
+      />
+      <circle
+        class="radial-gauge-arc"
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke-width={strokeWidth}
+        stroke-dasharray={`${arcLength} ${circumference - arcLength}`}
+      />
+    </g>
+  </svg>
+  <span class="radial-gauge-value" aria-hidden="true">{centerValue}</span>
+</div>

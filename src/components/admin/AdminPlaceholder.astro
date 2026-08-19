@@ -1,0 +1,39 @@
+---
+import KuboIcon from '../ui/KuboIcon.astro';
+import type { IconName } from '../ui/KuboIcon.astro';
+import KuboConstructionGrid from '../ui/KuboConstructionGrid.astro';
+
+interface Props {
+  category: string;
+  tab: string;
+  icon?: IconName;
+}
+
+const { category, tab, icon = 'cube' } = Astro.props;
+---
+
+<section class="page-heading reveal" style="--delay: 20ms">
+  <div>
+    <div class="eyebrow-line">
+      <span class="page-index">{category.toUpperCase()}</span>
+      <span class="demo-chip">DATOS DEMO</span>
+    </div>
+    <h1>{tab}</h1>
+    <p>Este módulo todavía no está desarrollado. Aquí vivirá {tab.toLowerCase()} dentro de {category}.</p>
+  </div>
+</section>
+
+<div class="placeholder-panel reveal" style="--delay: 90ms">
+  <KuboConstructionGrid variant="placeholder" intensity="low" />
+  <div class="placeholder-inner">
+    <div class="placeholder-symbol" aria-hidden="true">
+      <KuboIcon name={icon} size={26} />
+    </div>
+    <h2>{tab}</h2>
+    <p>
+      Esta pantalla forma parte de <strong>{category}</strong> y aún no tiene funcionalidad real. Se
+      construirá sobre el mismo sistema de layout, tarjetas, tablas y motion del Dashboard.
+    </p>
+    <span class="placeholder-tag">PRÓXIMAMENTE</span>
+  </div>
+</div>

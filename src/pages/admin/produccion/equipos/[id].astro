@@ -1,0 +1,23 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import PrinterDetailWorkspace from '../../../../components/admin/printers/PrinterDetailWorkspace.svelte';
+import { DEMO_PRINTERS } from '../../../../data/admin/printers.mock';
+
+/**
+ * Sitio estático (sin adapter SSR) — las rutas dinámicas necesitan `getStaticPaths`. Genera un path
+ * por cada impresora seed conocida al build (hoy solo A1 #01); ampliar el seed en
+ * `data/admin/printers.mock.ts` agrega automáticamente su página de detalle. El estado real
+ * (incluida una impresora creada en sesión) vive en localStorage — PrinterDetailWorkspace lo lee
+ * en cliente y muestra "Impresora no encontrada" si el id no existe ahí tampoco.
+ */
+export function getStaticPaths() {
+  return DEMO_PRINTERS.map((printer) => ({ params: { id: printer.id } }));
+}
+
+const { id } = Astro.params;
+const printer = DEMO_PRINTERS.find((p) => p.id === id);
+---
+
+<AdminLayout title={printer ? printer.internalName : 'Equipo'}>
+  <PrinterDetailWorkspace client:load printerId={id as string} />
+</AdminLayout>

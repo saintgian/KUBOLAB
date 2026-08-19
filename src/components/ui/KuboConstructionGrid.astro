@@ -1,0 +1,257 @@
+---
+/**
+ * KuboConstructionGrid.astro
+ * Capa decorativa "construction lines" — silenciosa, CSS-only, sin JS de medición.
+ *
+ * variant="dashboard": se usa como hijo directo de `.dashboard-grid` (12 columnas). Reutiliza
+ * EXACTAMENTE el grid real (mismas columnas/filas/gap) para que las guías caigan en líneas de
+ * grid reales — nunca en porcentajes inventados. Cada guía/nodo es un elemento
+ * `position:absolute` propio, hijo directo de `.dashboard-grid`: los elementos absolutamente
+ * posicionados quedan fuera del algoritmo de auto-placement de CSS Grid, así que no compiten
+ * por celdas ni desplazan a los paneles reales (Ventas, Pedidos, Producción, etc.) — esto es
+ * intencional y es lo que permite usar `grid-column`/`grid-row` reales sin romper el layout.
+ * Cada guía se centra en el hueco (`gap`) entre dos tracks vía `inset` + `margin:auto`, así que
+ * geométricamente nunca pisa la superficie opaca de un panel.
+ *
+ * Iteración 5: las verticales de línea 8/9 se retiraron del variant="dashboard" — quedaron
+ * redundantes con los divisores internos reales que ahora dibujan .analytics-surface y
+ * .operations-surface (admin-dashboard.css) en la misma proporción 8/4 y 7/5. Solo quedan las
+ * horizontales (costura financiero → operación → catálogo) y los 2 nodos existentes.
+ *
+ * variant="placeholder": se usa dentro de `.placeholder-panel` (no es un grid de 12 columnas),
+ * así que en vez de líneas de grid usa una marca de esquina + un nodo — mismo lenguaje visual,
+ * mecanismo simple porque el contenedor no tiene estructura de columnas que replicar.
+ */
+export type ConstructionVariant = 'dashboard' | 'placeholder';
+export type ConstructionIntensity = 'low' | 'medium';
+
+interface Props {
+  variant?: ConstructionVariant;
+  intensity?: ConstructionIntensity;
+  showNodes?: boolean;
+}
+
+const { variant = 'dashboard', intensity = 'low', showNodes = false } = Astro.props;
+---
+
+{
+  variant === 'dashboard' && (
+    <>
+      {/* Iteración 5 — verticales de línea 8/9 retiradas (no solo apagadas): esta iteración
+          envuelve Ventas+Canal y Pedidos+Producción en superficies conectadas
+          (.analytics-surface/.operations-surface, ver admin-dashboard.css) que dibujan su
+          propio divisor interno real de 1px exactamente en la misma proporción 8/4 y 7/5 que
+          estas guías marcaban. Con el divisor real ahí, una guía de overlay en el mismo sitio
+          es ruido redundante (dos marcas para la misma costura), así que se elimina en vez de
+          promoverla — más consistente con "organiza, no decora" que mantener ambas. Quedan
+          las horizontales (financiero → operación → catálogo) y los 2 nodos existentes, que no
+          dependían geométricamente de estas verticales para tener sentido (viven sobre la
+          horizontal, en una intersección de columna real). */}
+      <div class="kcg kcg-vline kcg-vline-mobile" data-intensity={intensity} aria-hidden="true" />
+
+      {/* Horizontales — costura fila1/fila2 y fila2/fila3 (desktop); se reasignan a los cortes
+          semánticos reales (financiero → operación → catálogo) en el tier ≤1023. */}
+      <div class="kcg kcg-hline kcg-hline-a" data-intensity={intensity} aria-hidden="true" />
+      <div class="kcg kcg-hline kcg-hline-b" data-intensity={intensity} aria-hidden="true" />
+
+      {showNodes && (
+        <>
+          <span class="kcg kcg-node kcg-node-1 reveal" style="--delay: 520ms" aria-hidden="true" />
+          <span class="kcg kcg-node kcg-node-2 reveal" style="--delay: 560ms" aria-hidden="true" />
+        </>
+      )}
+    </>
+  )
+}
+
+{
+  variant === 'placeholder' && (
+    <div class="kcg kcg-placeholder-layer" data-intensity={intensity} aria-hidden="true">
+      <span class="kcg-corner kcg-corner-tl reveal" style="--delay: 200ms" />
+      <span class="kcg-node kcg-node-placeholder reveal" style="--delay: 260ms" />
+    </div>
+  )
+}
+
+<style>
+  /* ========== DASHBOARD: guías reales, ancladas a líneas de grid ========== */
+
+  .kcg {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .kcg-vline,
+  .kcg-hline {
+    background: color-mix(in srgb, var(--kubo-carbon) 3.5%, transparent);
+  }
+
+  .kcg-vline[data-intensity='medium'],
+  .kcg-hline[data-intensity='medium'] {
+    background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  }
+
+  /* Verticales: se centran en el gap real entre dos tracks (track + gap + track) usando
+     inset + margin:auto — nunca un porcentaje fijo. */
+  .kcg-vline {
+    inset-block: 0;
+    inset-inline: 0;
+    width: 1px;
+    margin-inline: auto;
+    transform-origin: top;
+  }
+
+  .kcg-vline-mobile {
+    display: none;
+  }
+
+  /* Horizontales: se centran en el gap real entre dos filas (fila + gap + fila). Los índices de
+     fila los define `.dashboard-grid` vía custom properties (ver admin-dashboard.css) porque
+     cambian de significado semántico según el breakpoint (mismas líneas 2/3 en desktop y
+     tablet; se reasignan al corte financiero→operación→catálogo en ≤1023). */
+  .kcg-hline {
+    grid-column: 1 / -1;
+    inset-inline: 0;
+    inset-block: 0;
+    height: 1px;
+    margin-block: auto;
+    transform-origin: left;
+  }
+
+  .kcg-hline-a {
+    grid-row-start: var(--kcg-hline-a-start, 1);
+    grid-row-end: var(--kcg-hline-a-end, 3);
+  }
+
+  .kcg-hline-b {
+    grid-row-start: var(--kcg-hline-b-start, 2);
+    grid-row-end: var(--kcg-hline-b-end, 4);
+  }
+
+  /* Nodos: 5px, en intersecciones reales (mismas áreas de grid que las guías). Carbón, no rojo
+     (no hay estado activo/seleccionado real que un nodo rojo represente aquí). */
+  .kcg-node {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--kubo-carbon) 20%, transparent);
+    inset-block: 0;
+    inset-inline: 0;
+    margin: auto;
+  }
+
+  .kcg-node-1 {
+    grid-column: 8 / 10;
+    grid-row-start: var(--kcg-hline-a-start, 1);
+    grid-row-end: var(--kcg-hline-a-end, 3);
+  }
+
+  .kcg-node-2 {
+    grid-column: 7 / 9;
+    grid-row-start: var(--kcg-hline-b-start, 2);
+    grid-row-end: var(--kcg-hline-b-end, 4);
+  }
+
+  /* ≤1023: ya no hay Bento de 12 columnas real (paneles a span 12 casi todos) — se apaga el
+     nodo1 (vivía en línea9×filaA, que deja de tener sentido sin esa columna real); el nodo2 se
+     conserva porque línea8×filaB colapsa igual que hline-b al mismo corte operación→catálogo
+     reasignado vía custom properties. Se añade una única vertical simple cerca del borde
+     izquierdo. Las verticales de línea 8/9 ya no existen en el markup (ver arriba), así que no
+     hace falta apagarlas aquí. */
+  @media (max-width: 1023px) {
+    .kcg-node-1 {
+      display: none;
+    }
+
+    .kcg-node-2 {
+      /* Reset explícito (no solo justify-self): .kcg-node trae margin:auto + inset lógico en 0
+         para centrarse en su área de grid — con margin:auto activo, justify-self queda
+         ignorado (el margen automático tiene prioridad para absorber el espacio libre), así
+         que hay que anular inset/margin a mano para anclarlo cerca del borde izquierdo real. */
+      grid-column: 1 / -1;
+      inset-inline: auto;
+      left: var(--space-6);
+      margin: auto 0;
+    }
+
+    .kcg-vline-mobile {
+      display: block;
+      left: var(--space-6);
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      margin: 0;
+    }
+  }
+
+  /* Entrada: mismo mecanismo has-js/ui-ready que el resto del admin (ver draw-line en
+     admin-dashboard.css) — aquí adaptado a transform (los guides son <div>, no <path> SVG). */
+  :global(.has-js) .kcg-vline {
+    transform: scaleY(0);
+  }
+
+  :global(.has-js) .kcg-hline {
+    transform: scaleX(0);
+  }
+
+  :global(.ui-ready) .kcg-vline {
+    animation: kcg-draw-v 520ms var(--ease-emphasized) forwards;
+  }
+
+  :global(.ui-ready) .kcg-hline {
+    animation: kcg-draw-h 520ms 60ms var(--ease-emphasized) forwards;
+  }
+
+  @keyframes kcg-draw-v {
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes kcg-draw-h {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.has-js) .kcg-vline,
+    :global(.has-js) .kcg-hline {
+      transform: none;
+    }
+  }
+
+  /* ========== PLACEHOLDER: marca de esquina + un nodo ========== */
+
+  .kcg-placeholder-layer {
+    inset: 0;
+    /* Detrás de .placeholder-inner: ver z-index:0 en .placeholder-panel (admin-dashboard.css). */
+    z-index: -1;
+  }
+
+  .kcg-corner {
+    position: absolute;
+    top: var(--space-5);
+    left: var(--space-5);
+    width: 18px;
+    height: 18px;
+    border-top: 1px solid color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  }
+
+  .kcg-node-placeholder {
+    /* Reset explícito de las 4 esquinas físicas + margin: .kcg-node (base compartida con las
+       guías del dashboard) fija inset lógico en 0 y margin:auto para centrarse en su celda de
+       grid — aquí no hay grid, así que se pisa cada lado a mano para anclar la esquina real
+       (top/left en auto, no en 0) y evitar que el margin:auto heredado termine centrando el
+       nodo en vez de anclarlo. */
+    position: absolute;
+    inset: auto var(--space-5) var(--space-5) auto;
+    margin: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--kubo-carbon) 18%, transparent);
+  }
+</style>

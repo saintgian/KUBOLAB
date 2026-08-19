@@ -1,0 +1,77 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import KpiCard from '../../components/admin/KpiCard.astro';
+import DashboardAnalytics from '../../components/admin/DashboardAnalytics.svelte';
+import RecentOrders from '../../components/admin/RecentOrders.astro';
+import ProductionQueue from '../../components/admin/ProductionQueue.astro';
+import TopProducts from '../../components/admin/TopProducts.astro';
+import CustomProjects from '../../components/admin/CustomProjects.astro';
+import RecentActivity from '../../components/admin/RecentActivity.astro';
+import AdminDetailDrawer from '../../components/admin/AdminDetailDrawer.svelte';
+import KuboConstructionGrid from '../../components/ui/KuboConstructionGrid.astro';
+import { kpis } from '../../data/admin/dashboard.mock';
+---
+
+<AdminLayout title="Dashboard">
+  <section class="page-heading reveal" style="--delay: 0ms">
+    <div>
+      <div class="eyebrow-line">
+        <span class="page-index">01 / INICIO</span>
+        <span class="demo-chip">DATOS DEMO</span>
+      </div>
+      <h1>Dashboard</h1>
+      <p>Resumen general de tu tienda, proyectos y producción.</p>
+    </div>
+  </section>
+
+  <section class="kpi-grid" aria-label="Indicadores generales">
+    {kpis.map((kpi, index) => (
+      <KpiCard
+        eyebrow={kpi.eyebrow}
+        value={kpi.value}
+        delta={kpi.delta}
+        context={kpi.context}
+        tone={kpi.tone}
+        points={kpi.points}
+        delayMs={30 + index * 20}
+        featured={index === 0}
+        radial={kpi.radial}
+      />
+    ))}
+  </section>
+
+  <section class="dashboard-grid">
+    <KuboConstructionGrid variant="dashboard" intensity="low" showNodes />
+    <DashboardAnalytics client:visible />
+    <div class="operations-surface reveal" style="--delay: 180ms">
+      <RecentOrders />
+      <ProductionQueue />
+    </div>
+    <TopProducts />
+    <CustomProjects />
+    <RecentActivity />
+  </section>
+
+  <AdminDetailDrawer client:idle />
+
+  <script>
+    // Delega la apertura del detail drawer: las filas (Pedidos, Producción, Custom) son
+    // <button data-detail-trigger data-detail="..."> planos renderizados por Astro — no
+    // necesitan hidratarse. Un único listener aquí lee el JSON y llama a openDetail() en el
+    // store compartido con AdminDetailDrawer.svelte.
+    import { openDetail } from '../../stores/drawer-store';
+
+    document.addEventListener('click', (event) => {
+      const trigger = (event.target as HTMLElement)?.closest<HTMLElement>('[data-detail-trigger]');
+      if (!trigger) return;
+      const raw = trigger.getAttribute('data-detail');
+      if (!raw) return;
+      try {
+        const payload = JSON.parse(raw);
+        openDetail(payload, trigger);
+      } catch {
+        // Datos demo mal formados: no abrir el drawer en vez de romper la página.
+      }
+    });
+  </script>
+</AdminLayout>

@@ -1,0 +1,14 @@
+---
+/**
+ * Insignia de estado. El color nunca es el único indicador: siempre incluye texto y un
+ * marcador de forma (punto) generado por CSS ::before para no depender solo del color.
+ */
+interface Props {
+  tone: string;
+  label: string;
+}
+
+const { tone, label } = Astro.props;
+---
+
+<span class={`status-badge status-${tone}`}>{label}</span>

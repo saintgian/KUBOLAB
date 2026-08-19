@@ -1,0 +1,251 @@
+---
+/**
+ * /admin/login
+ * Puerta de entrada visual al Admin KUBO (docs/specs/admin-login-spec.md). No usa
+ * AdminLayout.astro a propósito (spec: "no usa el shell normal del Admin" — sin sidebar,
+ * topbar ni footer decorativo) pero reutiliza los mismos tokens/fuentes/clases compartidas
+ * (.field, .text-input, .primary-button, KuboConstructionGrid) que el resto de /admin.
+ */
+import '../../styles/brand-tokens.css';
+import '../../styles/admin-core.css';
+import '../../styles/admin-dashboard.css';
+import KuboConstructionGrid from '../../components/ui/KuboConstructionGrid.astro';
+import AdminLoginForm from '../../components/admin/login/AdminLoginForm.svelte';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#141414" />
+    <title>Inicia sesión · KUBO Admin</title>
+  </head>
+
+  <body class="login-body">
+    <div class="login-shell">
+      <aside class="login-brand-panel" aria-hidden="true">
+        <KuboConstructionGrid variant="placeholder" intensity="low" />
+
+        <div class="login-brand-top reveal">
+          <img
+            src="/assets/logos/KUBO_InversaColor_Horizontal.svg"
+            alt=""
+            class="login-logo"
+            width="140"
+            height="36"
+          />
+          <p class="login-eyebrow">ADMIN SYSTEM</p>
+        </div>
+
+        <div class="login-brand-bottom reveal" style="--delay: 80ms">
+          <p class="login-tagline">[ TODO, BIEN PENSADO. ]</p>
+          <p class="login-location">LIMA, PERÚ</p>
+        </div>
+      </aside>
+
+      <main class="login-form-panel">
+        <header class="login-mobile-header reveal">
+          <img
+            src="/assets/logos/KUBO_Monocroma_Carbon_Horizontal.svg"
+            alt="KUBO"
+            class="login-mobile-logo"
+            width="120"
+            height="30"
+          />
+          <p class="login-eyebrow login-eyebrow--mobile">ADMIN SYSTEM</p>
+        </header>
+
+        <div class="login-form-wrap reveal" style="--delay: 120ms">
+          <div class="login-card">
+            <h1 class="login-heading">INICIA SESIÓN</h1>
+            <p class="login-copy">Ingresa tus credenciales para continuar.</p>
+
+            <AdminLoginForm client:load />
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script is:inline>
+      const root = document.documentElement;
+      root.classList.add('has-js');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => document.body.classList.add('ui-ready'));
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  .login-body {
+    background: var(--kubo-ivory);
+  }
+
+  .login-shell {
+    display: grid;
+    min-height: 100vh;
+  }
+
+  /* ===== Panel izquierdo (desktop, >=1024px) ===== */
+
+  .login-brand-panel {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: var(--space-7);
+    color: var(--kubo-ivory);
+    background: var(--kubo-carbon);
+  }
+
+  .login-brand-top,
+  .login-brand-bottom {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .login-logo {
+    display: block;
+    width: 140px;
+    height: auto;
+  }
+
+  .login-eyebrow {
+    margin: 0;
+    color: rgb(252 249 244 / 0.72);
+    font-family: var(--font-kubo-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+  }
+
+  .login-tagline {
+    margin: 0;
+    color: var(--kubo-ivory);
+    font-family: var(--font-kubo-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .login-location {
+    margin: 0;
+    color: rgb(252 249 244 / 0.55);
+    font-family: var(--font-kubo-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== Panel derecho / formulario ===== */
+
+  .login-form-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .login-mobile-header {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+
+  .login-mobile-logo {
+    display: block;
+    width: 120px;
+    height: auto;
+  }
+
+  .login-eyebrow--mobile {
+    color: var(--admin-muted);
+    text-align: center;
+  }
+
+  .login-form-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .login-form-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -20% -12%;
+    z-index: -1;
+    background:
+      radial-gradient(closest-side, color-mix(in srgb, var(--kubo-red) 16%, transparent), transparent 70%) 12% 8% /
+        55% 60% no-repeat,
+      radial-gradient(closest-side, color-mix(in srgb, var(--kubo-blue) 22%, transparent), transparent 70%) 92% 88% /
+        50% 55% no-repeat;
+    filter: blur(36px);
+    pointer-events: none;
+  }
+
+  .login-card {
+    padding: var(--space-6);
+    background: color-mix(in srgb, var(--kubo-ivory) 100%, white);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .login-heading {
+    margin: 0 0 var(--space-3);
+    color: var(--kubo-carbon);
+    font-family: var(--font-kubo-sans);
+    font-size: clamp(24px, 3vw, 30px);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .login-copy {
+    margin: 0 0 var(--space-7);
+    color: var(--admin-muted);
+    font-family: var(--font-kubo-sans);
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  /* ===== Desktop: split real ===== */
+
+  @media (min-width: 1024px) {
+    .login-shell {
+      grid-template-columns: minmax(360px, 38%) 1fr;
+    }
+
+    .login-brand-panel {
+      display: flex;
+    }
+
+    .login-mobile-header {
+      display: none;
+    }
+
+    .login-form-panel {
+      padding: var(--space-8);
+    }
+
+    .login-card {
+      padding: var(--space-7);
+    }
+  }
+
+  /* ===== Motion ===== */
+
+  .login-brand-bottom.reveal {
+    --delay: 80ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .login-shell {
+      scroll-behavior: auto;
+    }
+  }
+</style>

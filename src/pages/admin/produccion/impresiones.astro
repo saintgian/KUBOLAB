@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import PrintsWorkspace from '../../../components/admin/prints/PrintsWorkspace.svelte';
+---
+
+<AdminLayout title="Impresiones">
+  <PrintsWorkspace client:load />
+</AdminLayout>

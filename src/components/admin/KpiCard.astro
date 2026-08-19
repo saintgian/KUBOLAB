@@ -1,0 +1,70 @@
+---
+import KuboIcon from '../ui/KuboIcon.astro';
+import RadialGauge from './ui/RadialGauge.astro';
+
+interface Props {
+  eyebrow: string;
+  value: string;
+  delta: string;
+  context: string;
+  tone: string;
+  points: readonly number[];
+  delayMs: number;
+  featured?: boolean;
+  radial?: boolean;
+}
+
+const { eyebrow, value, delta, context, tone, points, delayMs, featured = false, radial = false } = Astro.props;
+const radialPercent = radial ? parseInt(value, 10) : 0;
+
+function sparklinePath(pts: readonly number[]) {
+  const width = 112;
+  const height = 44;
+  const padding = 3;
+  const min = Math.min(...pts);
+  const max = Math.max(...pts);
+  const range = Math.max(max - min, 1);
+
+  return pts
+    .map((point, index) => {
+      const x = padding + (index * (width - padding * 2)) / (pts.length - 1);
+      const y = height - padding - ((point - min) / range) * (height - padding * 2);
+      return `${index === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`;
+    })
+    .join(' ');
+}
+---
+
+<article class:list={['kpi-card', 'reveal', `tone-${tone}`, { 'kpi-featured': featured }]} style={`--delay: ${delayMs}ms`}>
+  <div class="kpi-card-top">
+    <p>{eyebrow}</p>
+    <button class="micro-info" type="button" aria-label={`Información sobre ${eyebrow}`}>
+      <KuboIcon name="info-circle" size={14} />
+    </button>
+  </div>
+
+  <div class="kpi-card-main">
+    <div>
+      <strong class="kpi-value">{value}</strong>
+      <div class="kpi-meta">
+        <span class="kpi-delta">{delta}</span>
+        <span>{context}</span>
+      </div>
+    </div>
+
+    {radial ? (
+      <RadialGauge
+        percent={radialPercent}
+        size={44}
+        strokeWidth={5}
+        centerValue={value}
+        ariaLabel={`${eyebrow}: ${value}`}
+      />
+    ) : (
+      <svg class="sparkline" viewBox="0 0 112 44" role="img" aria-label={`Tendencia de ${eyebrow}`}>
+        <path class="sparkline-grid" d="M3 40 H109" />
+        <path class="sparkline-line" pathLength="1" d={sparklinePath(points)} />
+      </svg>
+    )}
+  </div>
+</article>

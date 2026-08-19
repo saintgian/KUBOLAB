@@ -1,0 +1,641 @@
+---
+import '../styles/brand-tokens.css';
+import KuboIcon from '../components/ui/KuboIcon.astro';
+---
+
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light" />
+		<meta name="theme-color" content="#FCF9F4" />
+		<meta
+			name="description"
+			content="KUBO — la nueva web está en proceso. Seguimos diseñando y fabricando en Lima, Perú."
+		/>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>KUBO — En construcción</title>
+		<script is:inline>
+			document.documentElement.classList.add('has-js');
+		</script>
+	</head>
+
+	<body>
+		<div class="page">
+			<div class="cutting-mat" aria-hidden="true"></div>
+			<span class="mark mark-tl" aria-hidden="true"></span>
+			<span class="mark mark-br" aria-hidden="true"></span>
+
+			<span class="tag-construction kubo-system" aria-hidden="true">
+				EN CONSTRUCCIÓN
+				<i class="tag-rule"></i>
+			</span>
+
+			<main class="content">
+				<img
+					class="logo"
+					src="/assets/logos/KUBO_Principal_Horizontal.svg"
+					alt="KUBO"
+					width="220"
+					height="57"
+				/>
+
+				<h1 class="headline" aria-label="ESTAMOS DANDO FORMA A ALGO BIEN PENSADO.">
+					<span class="headline-line" data-headline-line aria-hidden="true"
+						>ESTAMOS DANDO FORMA</span
+					>
+					<span class="headline-line" data-headline-line aria-hidden="true"
+						>A ALGO BIEN PENSADO<span class="dot">.</span></span
+					>
+				</h1>
+
+				<i class="rule reveal-item" style="--stagger:0" aria-hidden="true"></i>
+
+				<p class="copy reveal-item kubo-copy" style="--stagger:1">
+					La nueva web de KUBO está en proceso.<br />
+					Mientras tanto, seguimos diseñando y fabricando en <span class="accent">Lima</span>.
+				</p>
+
+				<p class="label reveal-item kubo-system" style="--stagger:2">
+					<span class="bracket" aria-hidden="true">[</span>
+					TODO, BIEN PENSADO.
+					<span class="bracket" aria-hidden="true">]</span>
+				</p>
+
+				<p class="location reveal-item kubo-system" style="--stagger:3">
+					<KuboIcon name="map-pin" size={14} class="location-icon" />
+					LIMA, PERÚ
+				</p>
+
+				<ul class="social reveal-item" style="--stagger:4" aria-hidden="true">
+					<li class="social-item"><KuboIcon name="whatsapp" size={18} /></li>
+					<li class="social-item"><KuboIcon name="instagram" size={18} /></li>
+					<li class="social-item"><KuboIcon name="facebook" size={18} /></li>
+					<li class="social-item"><KuboIcon name="tiktok" size={18} /></li>
+				</ul>
+
+				<div class="cycle reveal-item" style="--stagger:5" aria-hidden="true">
+					<div class="cycle-track">
+						<span class="cycle-station"></span>
+						<span class="cycle-station"></span>
+						<span class="cycle-station"></span>
+						<span class="cycle-indicator"></span>
+					</div>
+					<div class="cycle-labels kubo-system">
+						<span>DISEÑO</span>
+						<span>PROTOTIPO</span>
+						<span>FABRICACIÓN</span>
+					</div>
+				</div>
+			</main>
+
+			<footer class="footer kubo-system">
+				<span>KUBO.STUDIO</span>
+				<span>© 2026 KUBO</span>
+			</footer>
+		</div>
+
+		<script>
+			const headline = document.querySelector('.headline');
+			const lines = headline
+				? Array.from(headline.querySelectorAll<HTMLElement>('[data-headline-line]'))
+				: [];
+
+			if (headline && lines.length) {
+				const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+				const lineChars = lines.map((line) => {
+					const text = line.textContent ?? '';
+					line.textContent = '';
+					const chars = Array.from(text).map((ch) => {
+						const span = document.createElement('span');
+						span.className = 'char';
+						span.textContent = ch === ' ' ? ' ' : ch;
+						span.style.opacity = '0';
+						line.appendChild(span);
+						return span;
+					});
+					line.classList.add('is-ready');
+					return chars;
+				});
+
+				const allChars = lineChars.flat();
+
+				if (reduceMotion) {
+					allChars.forEach((span) => {
+						span.style.opacity = '1';
+					});
+					document.documentElement.classList.add('typed-done');
+				} else {
+					const cursor = document.createElement('span');
+					cursor.className = 'headline-cursor';
+					cursor.setAttribute('aria-hidden', 'true');
+
+					let i = 0;
+					const speed = 30;
+
+					const tick = () => {
+						if (i >= allChars.length) {
+							window.setTimeout(() => cursor.remove(), 700);
+							document.documentElement.classList.add('typed-done');
+							return;
+						}
+						const span = allChars[i];
+						span.style.opacity = '1';
+						span.insertAdjacentElement('afterend', cursor);
+						i += 1;
+						window.setTimeout(tick, speed + Math.random() * 26);
+					};
+
+					window.setTimeout(tick, 260);
+				}
+			} else {
+				document.documentElement.classList.add('typed-done');
+			}
+		</script>
+
+		<style>
+			@font-face {
+				font-family: 'Space Grotesk';
+				src: url('/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf')
+					format('truetype-variations');
+				font-style: normal;
+				font-weight: 300 700;
+				font-display: swap;
+			}
+
+			@font-face {
+				font-family: 'JetBrains Mono';
+				src: url('/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf')
+					format('truetype-variations');
+				font-style: normal;
+				font-weight: 300 700;
+				font-display: swap;
+			}
+
+			:global(:root) {
+				--space-1: 0.25rem;
+				--space-2: 0.5rem;
+				--space-3: 0.75rem;
+				--space-4: 1rem;
+				--space-6: 1.5rem;
+				--space-8: 2rem;
+			}
+
+			:global(html),
+			:global(body) {
+				margin: 0;
+				height: 100%;
+				background: var(--kubo-ivory);
+			}
+
+			:global(*) {
+				box-sizing: border-box;
+			}
+
+			.page {
+				position: relative;
+				min-height: 100dvh;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				background: var(--kubo-ivory);
+				color: var(--kubo-carbon);
+				font-family: var(--font-kubo-sans);
+			}
+
+			/* ===== Cutting mat — baja intensidad, decorativa, sin datos falsos ===== */
+			.cutting-mat {
+				position: absolute;
+				inset: 0;
+				z-index: 0;
+				pointer-events: none;
+				background-image: radial-gradient(
+					circle,
+					color-mix(in srgb, var(--kubo-carbon) 10%, transparent) 1px,
+					transparent 1px
+				);
+				background-size: 28px 28px;
+				background-position: -6px -6px;
+				opacity: 0.55;
+				mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, transparent 40%, black 100%);
+			}
+
+			.mark {
+				position: absolute;
+				z-index: 0;
+				width: 14px;
+				height: 14px;
+				pointer-events: none;
+			}
+
+			.mark::before,
+			.mark::after {
+				content: '';
+				position: absolute;
+				background: color-mix(in srgb, var(--kubo-carbon) 22%, transparent);
+			}
+
+			.mark::before {
+				top: 50%;
+				left: 0;
+				right: 0;
+				height: 1px;
+				transform: translateY(-50%);
+			}
+
+			.mark::after {
+				left: 50%;
+				top: 0;
+				bottom: 0;
+				width: 1px;
+				transform: translateX(-50%);
+			}
+
+			.mark-tl {
+				top: var(--space-8);
+				left: var(--space-8);
+			}
+
+			.mark-br {
+				bottom: calc(var(--space-8) + 3.25rem);
+				right: var(--space-8);
+			}
+
+			/* ===== Etiqueta "EN CONSTRUCCIÓN" — periférica, discreta ===== */
+			.tag-construction {
+				position: absolute;
+				z-index: 1;
+				top: var(--space-8);
+				right: var(--space-6);
+				display: flex;
+				align-items: center;
+				gap: var(--space-3);
+				writing-mode: vertical-rl;
+				transform: rotate(180deg);
+				font-size: 0.68rem;
+				letter-spacing: 0.14em;
+				color: color-mix(in srgb, var(--kubo-carbon) 55%, transparent);
+			}
+
+			.tag-rule {
+				display: block;
+				width: 1px;
+				height: 22px;
+				background: color-mix(in srgb, var(--kubo-red) 55%, transparent);
+			}
+
+			/* ===== Contenido principal ===== */
+			.content {
+				position: relative;
+				z-index: 1;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				gap: var(--space-4);
+				max-width: 640px;
+				margin-inline: auto;
+				padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 6vw, 2rem);
+			}
+
+			.logo {
+				height: clamp(30px, 4vw, 42px);
+				width: auto;
+				margin-bottom: var(--space-4);
+				animation: logo-pulse 1.15s ease-in-out 3;
+				animation-fill-mode: forwards;
+			}
+
+			@keyframes logo-pulse {
+				0%,
+				100% {
+					transform: scale(1);
+					opacity: 1;
+				}
+				50% {
+					transform: scale(0.965);
+					opacity: 0.86;
+				}
+			}
+
+			.headline {
+				margin: 0;
+				font-family: var(--font-kubo-sans);
+				font-weight: 700;
+				text-transform: uppercase;
+				font-size: clamp(1.85rem, 6vw, 3.5rem);
+				line-height: 1.1;
+				letter-spacing: -0.01em;
+				color: var(--kubo-carbon);
+			}
+
+			.headline-line {
+				display: block;
+			}
+
+			:global(html.has-js) .headline-line {
+				visibility: hidden;
+			}
+
+			:global(html.has-js) .headline-line.is-ready {
+				visibility: visible;
+			}
+
+			.headline :global(.char) {
+				transition: none;
+			}
+
+			.dot {
+				color: var(--kubo-red);
+			}
+
+			.headline-cursor {
+				display: inline-block;
+				width: 2px;
+				height: 0.8em;
+				margin-left: 2px;
+				background: var(--kubo-red);
+				vertical-align: -0.05em;
+				animation: cursor-blink 0.9s steps(1) infinite;
+			}
+
+			@keyframes cursor-blink {
+				0%,
+				49% {
+					opacity: 1;
+				}
+				50%,
+				100% {
+					opacity: 0;
+				}
+			}
+
+			.rule {
+				display: block;
+				width: 64px;
+				height: 2px;
+				margin: var(--space-2) 0;
+				background: var(--kubo-red);
+			}
+
+			.copy {
+				margin: 0;
+				max-width: 30rem;
+				font-size: 1.05rem;
+				line-height: 1.65;
+				color: color-mix(in srgb, var(--kubo-carbon) 82%, transparent);
+			}
+
+			.accent {
+				color: var(--kubo-red);
+			}
+
+			.label {
+				margin: var(--space-2) 0 0;
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-2);
+				font-size: 0.78rem;
+				letter-spacing: 0.12em;
+				color: var(--kubo-carbon);
+			}
+
+			.bracket {
+				color: color-mix(in srgb, var(--kubo-red) 70%, transparent);
+				font-weight: 600;
+			}
+
+			.location {
+				margin: 0;
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-2);
+				font-size: 0.78rem;
+				letter-spacing: 0.08em;
+				color: color-mix(in srgb, var(--kubo-carbon) 68%, transparent);
+			}
+
+			.location :global(.location-icon) {
+				color: var(--kubo-red);
+			}
+
+			/* ===== Redes sociales — inactivas, sin enlaces todavía ===== */
+			.social {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: var(--space-4);
+				color: color-mix(in srgb, var(--kubo-carbon) 60%, transparent);
+			}
+
+			.social-item {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			/* ===== Ciclo de fabricación — proceso circular, sin porcentaje real ===== */
+			.cycle {
+				margin-top: var(--space-6);
+				display: flex;
+				flex-direction: column;
+				gap: var(--space-2);
+				width: min(420px, 100%);
+			}
+
+			.cycle-track {
+				position: relative;
+				height: 8px;
+			}
+
+			.cycle-track::before {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 0;
+				right: 0;
+				height: 1px;
+				transform: translateY(-50%);
+				background: color-mix(in srgb, var(--kubo-carbon) 14%, transparent);
+			}
+
+			.cycle-station {
+				position: absolute;
+				top: 50%;
+				width: 4px;
+				height: 4px;
+				transform: translate(-50%, -50%) rotate(45deg);
+				background: color-mix(in srgb, var(--kubo-carbon) 25%, transparent);
+			}
+
+			.cycle-station:nth-child(1) {
+				left: 0%;
+			}
+
+			.cycle-station:nth-child(2) {
+				left: 50%;
+			}
+
+			.cycle-station:nth-child(3) {
+				left: 100%;
+			}
+
+			.cycle-indicator {
+				position: absolute;
+				top: 50%;
+				left: 0%;
+				width: 9px;
+				height: 9px;
+				background: var(--kubo-red);
+				border-radius: 50%;
+				transform: translate(-50%, -50%);
+				animation: cycle-move 10s ease-in-out infinite;
+			}
+
+			@keyframes cycle-move {
+				0% {
+					left: 0%;
+					opacity: 0;
+				}
+				4% {
+					opacity: 1;
+				}
+				9%,
+				27% {
+					left: 0%;
+				}
+				41%,
+				59% {
+					left: 50%;
+				}
+				73%,
+				91% {
+					left: 100%;
+				}
+				96% {
+					opacity: 1;
+				}
+				100% {
+					left: 100%;
+					opacity: 0;
+				}
+			}
+
+			.cycle-labels {
+				display: flex;
+				justify-content: space-between;
+				font-size: 0.62rem;
+				letter-spacing: 0.1em;
+				color: color-mix(in srgb, var(--kubo-carbon) 58%, transparent);
+			}
+
+			/* ===== Reveal escalonado tras el tipeo ===== */
+			:global(html.has-js) .reveal-item {
+				opacity: 0;
+				transform: translateY(8px);
+				transition:
+					opacity 0.5s ease,
+					transform 0.5s ease;
+				transition-delay: calc(var(--stagger, 0) * 90ms);
+			}
+
+			:global(html.has-js.typed-done) .reveal-item {
+				opacity: 1;
+				transform: none;
+			}
+
+			/* ===== Footer ===== */
+			.footer {
+				position: relative;
+				z-index: 1;
+				display: flex;
+				justify-content: space-between;
+				gap: var(--space-4);
+				padding: var(--space-4) clamp(1.25rem, 6vw, 3rem);
+				font-size: 0.64rem;
+				letter-spacing: 0.08em;
+				color: color-mix(in srgb, var(--kubo-carbon) 55%, transparent);
+				border-top: 1px solid color-mix(in srgb, var(--kubo-carbon) 10%, transparent);
+			}
+
+			/* ===== Responsive ===== */
+			@media (max-width: 640px) {
+				.tag-construction,
+				.mark {
+					display: none;
+				}
+
+				.content {
+					gap: var(--space-3);
+				}
+
+				.headline {
+					font-size: clamp(1.5rem, 8.5vw, 2.1rem);
+				}
+
+				.copy {
+					font-size: 0.95rem;
+				}
+
+				.social {
+					gap: var(--space-3);
+				}
+
+				.cycle-labels {
+					font-size: 0.56rem;
+				}
+			}
+
+			@media (max-width: 390px) {
+				.social {
+					gap: var(--space-2);
+				}
+
+				.cycle-labels {
+					font-size: 0.52rem;
+					letter-spacing: 0.06em;
+				}
+			}
+
+			@media (max-width: 360px) {
+				.footer {
+					font-size: 0.58rem;
+				}
+			}
+
+			/* ===== Reduced motion ===== */
+			@media (prefers-reduced-motion: reduce) {
+				* {
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+					scroll-behavior: auto !important;
+				}
+
+				.logo {
+					animation: none;
+				}
+
+				.cycle-indicator {
+					display: none;
+				}
+
+				.cycle-station {
+					background: var(--kubo-red);
+				}
+
+				:global(html.has-js) .reveal-item {
+					opacity: 1;
+					transform: none;
+				}
+			}
+		</style>
+	</body>
+</html>

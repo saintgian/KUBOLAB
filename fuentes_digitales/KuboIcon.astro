@@ -1,0 +1,44 @@
+---
+/**
+ * KuboIcon.astro
+ * Fuente oficial: Iconoir.
+ * Añade iconos al mapa únicamente cuando exista una necesidad real de interfaz.
+ *
+ * Ejemplo de instalación:
+ * npm install iconoir
+ */
+import Search from 'iconoir/icons/search.svg';
+import ShoppingBag from 'iconoir/icons/shopping-bag.svg';
+
+const icons = {
+  search: Search,
+  cart: ShoppingBag,
+} as const;
+
+type IconName = keyof typeof icons;
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  label?: string;
+}
+
+const {
+  name,
+  size = 20,
+  class: className,
+  label,
+} = Astro.props;
+
+const Icon = icons[name];
+---
+
+<Icon
+  width={size}
+  height={size}
+  class={className}
+  stroke="currentColor"
+  aria-hidden={label ? undefined : "true"}
+  aria-label={label}
+/>

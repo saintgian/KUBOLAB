@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ExpensesWorkspace from '../../../components/admin/expenses/ExpensesWorkspace.svelte';
+---
+
+<AdminLayout title="Gastos">
+  <ExpensesWorkspace client:load />
+</AdminLayout>

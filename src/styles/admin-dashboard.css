@@ -1,0 +1,4918 @@
+/* =========================================================
+   KUBO ADMIN — DASHBOARD
+   Contenido, KPIs, tarjetas/paneles, tablas, badges, listas y charts.
+   Depende de tokens definidos en admin-core.css.
+   ========================================================= */
+
+/* ========== CONTENT ========== */
+
+.admin-content {
+  width: min(100%, var(--content-max));
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+}
+
+.page-heading {
+  margin-bottom: var(--space-6);
+}
+
+.eyebrow-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 20px;
+  margin-bottom: var(--space-2);
+}
+
+.page-index,
+.demo-chip,
+.kpi-card-top,
+.summary-stat span,
+.channel-row small,
+.product-meta-line,
+.sidebar-version,
+.admin-footer,
+.production-index,
+.production-tech,
+.custom-due,
+.activity-row time,
+.chart-axis-labels,
+.chart-x-labels,
+.donut-center span,
+.mono-strong {
+  font-family: var(--font-kubo-mono);
+}
+
+.page-index {
+  color: var(--admin-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+.demo-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 19px;
+  padding: 0 7px;
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 40%, transparent);
+  border-radius: 5px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
+.page-heading h1 {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  font-weight: 650;
+}
+
+.page-heading p {
+  margin: 8px 0 0;
+  max-width: 560px;
+  color: var(--admin-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.heading-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ========== KPI ========== */
+
+.kpi-grid {
+  display: grid;
+  /* 12 columnas (no 5 iguales): permite que la KPI featured (Ventas) tome 4/12 y las 4
+     secundarias 2/12 cada una — ver el porqué en el comentario junto a .kpi-featured más abajo. */
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.kpi-card,
+.panel {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+}
+
+.kpi-card {
+  position: relative;
+  min-height: 118px;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  transition: border-color var(--dur-control) ease;
+}
+
+.kpi-card:hover {
+  border-color: var(--admin-border-strong);
+}
+
+.kpi-card.tone-red { --kpi-accent: var(--kubo-red); }
+.kpi-card.tone-blue { --kpi-accent: color-mix(in srgb, var(--kubo-blue) 78%, var(--kubo-carbon)); }
+.kpi-card.tone-neutral { --kpi-accent: var(--kubo-carbon); }
+
+.kpi-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--admin-muted);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .05em;
+}
+
+.kpi-card-top p {
+  margin: 0;
+}
+
+.micro-info {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: var(--admin-faint);
+  background: transparent;
+  border: 0;
+  border-radius: 99px;
+  cursor: pointer;
+}
+
+.micro-info:hover {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+}
+
+.kpi-card-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: var(--space-4);
+}
+
+.kpi-value {
+  display: block;
+  font-family: var(--font-kubo-sans);
+  font-size: clamp(21px, 1.7vw, 26px);
+  line-height: 1;
+  letter-spacing: -.03em;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.kpi-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-sans);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.kpi-delta {
+  color: var(--kpi-accent);
+  font-weight: 600;
+}
+
+.sparkline {
+  flex: 0 0 88px;
+  width: 88px;
+  height: 36px;
+  overflow: visible;
+}
+
+.sparkline-grid {
+  fill: none;
+  stroke: var(--admin-border);
+  stroke-width: 1;
+}
+
+.sparkline-line {
+  fill: none;
+  stroke: var(--kpi-accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.has-js .sparkline-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.ui-ready .sparkline-line {
+  animation: draw-line 620ms var(--ease-emphasized) forwards;
+}
+
+/* Radial gauge (Carga de producción): mismo lenguaje que el donut de "Por canal" — track carbón
+   muy tenue, arco celeste KUBO con extremos redondeados, sin glow ni degradado. A diferencia del
+   sparkline no se oculta en las KPI secundarias (2/12): es su propio slot, ver RadialGauge.astro. */
+.radial-gauge {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--rg-size);
+  height: var(--rg-size);
+}
+
+.radial-gauge-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.radial-gauge-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+}
+
+.radial-gauge-arc {
+  fill: none;
+  stroke: var(--kubo-blue);
+  stroke-linecap: round;
+}
+
+.radial-gauge-value {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-kubo-sans);
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+.kpi-card:not(.kpi-featured) .kpi-card-main {
+  align-items: center;
+}
+
+.kpi-card:not(.kpi-featured) .kpi-card-main:has(.radial-gauge) {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Iteración 5: las 5 KPI dejan de pesar igual a propósito. Ventas del periodo es la lectura
+   económica primaria del dashboard (todo lo demás — pedidos, custom, cotizaciones, producción —
+   es operativo/secundario) y ahora ocupa 4/12 columnas; las otras 4 ocupan 2/12 cada una
+   (4 + 2×4 = 12). La jerarquía es solo de tamaño: mismo padding, mismo radio, mismo borde que
+   las secundarias — no se vuelve una "hero card" con tratamiento especial. A 2/12 el sparkline
+   ya no cabe con comodidad junto al valor, así que las 4 secundarias lo ocultan y muestran solo
+   valor + delta + contexto (ver regla de .sparkline más abajo); Ventas conserva el suyo — su
+   ancho doble ya distribuye value+meta a la izquierda y sparkline a la derecha (mismo markup de
+   .kpi-card-main de siempre, sin cambios en KpiCard.astro). `featured` también se usa en mobile
+   (<768px, full width) — ver responsive más abajo. */
+.kpi-featured {
+  grid-column: span 4;
+}
+
+.kpi-card:not(.kpi-featured) {
+  grid-column: span 2;
+}
+
+.kpi-card:not(.kpi-featured) .sparkline {
+  display: none;
+}
+
+.kpi-card:not(.kpi-featured) .kpi-card-main {
+  display: block;
+}
+
+/* ========== GRID ========== */
+
+.dashboard-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* Filas explícitas (auto = idéntico a las filas implícitas por defecto, cero cambio visual):
+     solo sirve para que KuboConstructionGrid.astro pueda anclar sus guías/nodos a líneas de
+     grid reales (grid-row: N) en vez de porcentajes inventados. 3 filas limpias en desktop —
+     ver el desglose de spans más abajo. Los índices de fila que usan las guías horizontales
+     ("costura" financiero→operación→catálogo) viven en --kcg-hline-*, redefinidos por tier. */
+  grid-template-rows: repeat(3, auto);
+  --kcg-hline-a-start: 1;
+  --kcg-hline-a-end: 3;
+  --kcg-hline-b-start: 2;
+  --kcg-hline-b-end: 4;
+  gap: var(--space-4);
+}
+
+.panel {
+  min-width: 0;
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.panel-products { grid-column: span 4; }
+.panel-custom { grid-column: span 5; }
+.panel-activity { grid-column: span 3; }
+
+/* ========== CONNECTED BENTO: Analytics (Ventas | Por canal) y Operations (Pedidos | Producción) ==========
+   Antes, panel-sales(8)/panel-revenue(4) y panel-orders(7)/panel-production(5) eran 4 paneles
+   independientes, cada uno con su propio borde — en la costura donde dos vivían lado a lado
+   (mismo row, sin gap entre ellos porque el gap de .dashboard-grid solo separa celdas, no
+   existe "doble borde" ahí realmente ya que sí hay gap... el problema real no era doble borde
+   sino que leían como tarjetas SaaS sueltas, no una superficie construida). Ahora cada par se
+   envuelve en un único contenedor (.analytics-surface / .operations-surface) que:
+   1) recibe el grid-column:span 12 que antes llevaban los paneles individuales,
+   2) dibuja UN borde/radio/fondo exterior compartido,
+   3) reparte 8fr/4fr o 7fr/5fr por dentro (misma proporción aprobada, mecanismo distinto),
+   4) separa los dos módulos con un único divisor interno de 1px (no es línea de construcción —
+      esas viven solo en KuboConstructionGrid).
+   Los paneles hijos conservan su clase .panel (wiring/JS intactos) pero pierden borde/radio/fondo
+   propios vía los selectores anidados de abajo, para no duplicar el borde del wrapper. */
+
+.analytics-surface,
+.operations-surface {
+  min-width: 0;
+  grid-column: span 12;
+  display: grid;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.analytics-surface {
+  grid-template-columns: 8fr 4fr;
+}
+
+.operations-surface {
+  grid-template-columns: 7fr 5fr;
+}
+
+.analytics-surface .panel-sales,
+.analytics-surface .panel-revenue,
+.operations-surface .panel-orders,
+.operations-surface .panel-production {
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+/* panel-sales queda más corto que panel-revenue (donut + 4 filas de canal) y, al estirarse por
+   el grid stretch de .analytics-surface, dejaba un hueco vacío colgando debajo de sales-summary.
+   Flex column + margin-top:auto en sales-summary mueve ese sobrante arriba del resumen (entre el
+   chart y la fila de KPIs) para que el resumen quede anclado al borde inferior, alineado con el
+   final de la lista de canales — mismo patrón visual, sin espacio muerto al final. */
+.analytics-surface .panel-sales {
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-surface .panel-revenue {
+  border-left: 1px solid var(--admin-border);
+}
+
+.operations-surface .panel-production {
+  border-left: 1px solid var(--admin-border);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 58px;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.panel-header > div:first-child {
+  min-width: 0;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  font-weight: 650;
+}
+
+/* Construction rail — elemento nuevo y muy selectivo: marca de esquina + nodo, reutilizando
+   exactamente el lenguaje visual ya existente en KuboConstructionGrid (variant="placeholder":
+   .kcg-corner/.kcg-node-placeholder — mismos valores de opacidad/tamaño, no números inventados).
+   Solo en 2 módulos (prioridad del brief: Ventas, luego Producción — Custom queda fuera a
+   propósito para no gastar el presupuesto de nodos ni sumar ruido; no es obligatorio usar los
+   tres). Presupuesto de nodos del dashboard: 2 ya existen en KuboConstructionGrid (showNodes) +
+   estos 2 = 4/4, en el tope. Tucked en la esquina superior izquierda de la cabecera, separado del
+   título (que arranca en su propio padding) para no superponerse al texto. */
+.panel-sales .panel-header,
+.panel-production .panel-header {
+  /* Contexto de posicionamiento para los pseudo-elementos de abajo — sin esto, al ser
+     .panel-header estático, ::before/::after subirían hasta el <article> (también sin position
+     propio) y de ahí a un ancestro más lejano, perdiendo el anclaje real a la cabecera. */
+  position: relative;
+}
+
+.panel-sales .panel-header::before,
+.panel-production .panel-header::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  pointer-events: none;
+}
+
+.panel-sales .panel-header::after,
+.panel-production .panel-header::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--kubo-carbon) 18%, transparent);
+  pointer-events: none;
+}
+
+.compact-filter,
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.compact-filter {
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: color var(--dur-hover) ease, background-color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+.compact-filter:hover {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 4%, transparent);
+  border-color: var(--admin-border-strong);
+}
+
+/* Etiqueta de solo lectura: el control real de período vive en el header
+   (AdminPeriodSelector.svelte) — este chip confirma el período activo sin duplicar el control. */
+.compact-filter-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 4%, transparent);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.text-link {
+  transition: color var(--dur-hover) ease, transform var(--dur-hover) var(--ease-standard);
+}
+
+.text-link:hover {
+  color: var(--kubo-carbon);
+  transform: translateX(2px);
+}
+
+.panel-action {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  color: var(--admin-muted);
+  transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+}
+
+.panel-action:hover {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+}
+
+/* ========== SALES CHART ========== */
+
+.sales-chart-wrap {
+  position: relative;
+  --chart-pad-top: var(--space-4);
+  --chart-pad-right: var(--space-4);
+  --chart-pad-bottom: 4px;
+  --chart-pad-left: 50px;
+  padding: var(--chart-pad-top) var(--chart-pad-right) var(--chart-pad-bottom) var(--chart-pad-left);
+}
+
+.chart-axis-labels {
+  position: absolute;
+  top: var(--space-4);
+  bottom: 27px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--admin-faint);
+  font-size: 8px;
+}
+
+.sales-chart-plot {
+  position: relative;
+}
+
+.sales-chart {
+  display: block;
+  width: 100%;
+  height: 224px;
+  overflow: visible;
+}
+
+/* 4% — mismo orden de magnitud que la capa de construcción del dashboard (3.5%), para que el
+   chart lea como parte del mismo sistema en vez de un componente aislado con su propio ritmo. */
+.chart-grid-line {
+  stroke: color-mix(in srgb, var(--kubo-carbon) 4%, transparent);
+  stroke-width: 1;
+}
+
+.sales-line {
+  fill: none;
+  stroke: var(--kubo-red);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.has-js .sales-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.ui-ready .sales-line {
+  animation: draw-line 820ms 120ms var(--ease-emphasized) forwards;
+}
+
+/* Transición breve de "cambio de período" — un solo fundido de opacidad, nada de morphing. */
+.sales-chart-wrap,
+.sales-summary,
+.donut-zone {
+  transition: opacity var(--motion-normal) var(--motion-ease);
+}
+
+.sales-chart-wrap.is-switching,
+.sales-summary.is-switching,
+.donut-zone.is-switching {
+  opacity: .45;
+}
+
+.chart-crosshair {
+  stroke: color-mix(in srgb, var(--kubo-carbon) 22%, transparent);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  gap: 2px;
+  padding: 6px 9px;
+  color: var(--kubo-ivory);
+  background: var(--kubo-carbon);
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translate(-50%, -128%);
+}
+
+.chart-tooltip.align-start {
+  transform: translate(0, -128%);
+}
+
+.chart-tooltip.align-end {
+  transform: translate(-100%, -128%);
+}
+
+.chart-tooltip span {
+  color: rgb(252 249 244 / .68);
+  font-family: var(--font-kubo-mono);
+  font-size: 9px;
+  letter-spacing: .04em;
+}
+
+.chart-tooltip strong {
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+/* Los puntos viven como capa HTML aparte (no <circle> dentro del <svg>): el viewBox usa
+   preserveAspectRatio="none" para estirar el gráfico de forma no uniforme según el ancho del
+   panel, lo que deforma cualquier <circle> en una elipse. Como elementos HTML con border-radius
+   fijo en px, los puntos se mantienen perfectamente redondos en cualquier viewport. */
+.sales-points-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sales-point {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  outline: 0;
+  pointer-events: auto;
+}
+
+.sales-point-halo {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--kubo-red);
+  opacity: 0;
+  transition: opacity 140ms ease, transform 160ms var(--ease-emphasized);
+}
+
+.sales-point-dot {
+  position: relative;
+  width: 5.2px;
+  height: 5.2px;
+  border-radius: 50%;
+  background: var(--admin-surface);
+  border: 2.2px solid var(--kubo-red);
+  box-sizing: content-box;
+  transition: transform 160ms var(--ease-emphasized);
+}
+
+.sales-point.is-active .sales-point-halo,
+.sales-point:hover .sales-point-halo,
+.sales-point:focus-visible .sales-point-halo {
+  opacity: .12;
+  transform: scale(1.15);
+}
+
+.sales-point.is-active .sales-point-dot,
+.sales-point:hover .sales-point-dot,
+.sales-point:focus-visible .sales-point-dot {
+  transform: scale(1.25);
+}
+
+.chart-x-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 2px 7px 0;
+  color: var(--admin-faint);
+  font-size: 8px;
+  text-align: center;
+}
+
+.sales-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: auto;
+  border-top: 1px solid var(--admin-border);
+}
+
+.summary-stat {
+  padding: var(--space-4) var(--space-4);
+}
+
+/* Divisores internos del resumen de ventas, un poco más quietos que --admin-border (9%): ya
+   viven junto al ritmo de líneas del chart y de la capa de construcción, no necesitan pesar
+   tanto como un borde de agrupación real (ej. panel-header). Ajuste puntual, no un cambio
+   global de --admin-border. */
+.summary-stat + .summary-stat {
+  border-left: 1px solid color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+}
+
+.summary-stat span {
+  display: block;
+  color: var(--admin-faint);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .05em;
+}
+
+.summary-stat strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-kubo-sans);
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ========== DONUT ========== */
+
+.donut-zone {
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+}
+
+.revenue-donut-svg-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(168px, 68%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.revenue-donut-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.donut-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  stroke-width: 10;
+}
+
+.donut-arc {
+  fill: none;
+  stroke-width: 10;
+  cursor: pointer;
+  outline: 0;
+  transition:
+    stroke-width var(--motion-fast) var(--motion-ease),
+    opacity var(--motion-fast) var(--motion-ease);
+}
+
+.donut-arc.tone-carbon { stroke: var(--kubo-carbon); }
+.donut-arc.tone-blue { stroke: var(--kubo-blue); }
+.donut-arc.tone-red { stroke: var(--kubo-red); }
+.donut-arc.tone-muted { stroke: color-mix(in srgb, var(--kubo-carbon) 22%, var(--kubo-ivory)); }
+
+.donut-arc.is-active {
+  stroke-width: 12;
+}
+
+.donut-arc.is-dimmed {
+  opacity: .3;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center span {
+  max-width: 84px;
+  overflow: hidden;
+  color: var(--admin-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 8px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.donut-center strong {
+  font-family: var(--font-kubo-sans);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.channel-list {
+  display: grid;
+}
+
+.channel-row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--admin-border);
+  cursor: pointer;
+  font: inherit;
+  transition: background-color var(--motion-fast) ease;
+}
+
+.channel-row:hover,
+.channel-row.is-active {
+  background: color-mix(in srgb, var(--kubo-carbon) 3%, transparent);
+}
+
+.channel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.channel-dot.tone-carbon { background: var(--kubo-carbon); }
+.channel-dot.tone-blue { background: var(--kubo-blue); }
+.channel-dot.tone-red { background: var(--kubo-red); }
+.channel-dot.tone-muted { background: color-mix(in srgb, var(--kubo-carbon) 22%, var(--kubo-ivory)); }
+
+.channel-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 8px;
+}
+
+.channel-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.channel-copy small {
+  color: var(--admin-faint);
+  font-size: 10px;
+}
+
+.channel-amount {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-mono);
+  font-size: 10px;
+  font-weight: 550;
+}
+
+/* ========== TABLE ========== */
+
+.table-shell {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* .mobile-list también lleva la clase genérica .mobile-only, pero esa regla usa
+   `display:initial` (que para un <div> resuelve a `inline`, no a `none`) — así que
+   sin este override explícito, entre 768–1023px se verían tabla y tarjetas a la vez. */
+.mobile-list {
+  display: none;
+}
+
+.table-shell table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.table-shell th,
+.table-shell td {
+  padding: 12px var(--space-4);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.table-shell th {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .05em;
+}
+
+.table-shell td {
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+}
+
+.table-shell tbody tr {
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+
+.table-shell tbody tr:hover {
+  background: color-mix(in srgb, var(--kubo-carbon) 2.4%, transparent);
+}
+
+.table-shell tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.mono-strong {
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.row-action {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  color: var(--admin-faint);
+  transition: color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease);
+}
+
+.row-action:hover {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+}
+
+/* Primitive compartida de estados (StatusBadge.astro / .status-chip en Finanzas):
+   cápsula compacta, fondo tintado, sin borde ni sombra, texto siempre legible. */
+.status-badge,
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  height: 23px;
+  padding: 0 10px;
+  white-space: nowrap;
+  border: none;
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: var(--font-kubo-sans);
+  font-size: 11.5px;
+  font-weight: 550;
+  line-height: 1;
+}
+
+.status-badge::before,
+.status-chip::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  border-radius: 99px;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+.status-success {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 26%, var(--kubo-ivory));
+}
+
+.status-info {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 15%, var(--kubo-ivory));
+}
+
+.status-warning {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+}
+
+.status-warning::before {
+  background: var(--kubo-red);
+}
+
+.status-danger {
+  color: var(--kubo-red);
+  background: color-mix(in srgb, var(--kubo-red) 9%, var(--kubo-ivory));
+}
+
+.status-review {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 7%, var(--kubo-ivory));
+}
+
+.status-review::before {
+  background: var(--kubo-red);
+}
+
+.status-neutral,
+.status-muted {
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, var(--kubo-ivory));
+}
+
+/* ========== PRODUCTION ========== */
+
+.production-list,
+.product-list,
+.custom-list,
+.activity-list {
+  display: grid;
+}
+
+/* production-row y custom-row son <button> reales (abren el detail drawer) — reset explícito
+   porque el elemento cambió de <div> a <button> en esta iteración. */
+button.production-row,
+button.custom-row {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.production-row {
+  display: grid;
+  grid-template-columns: 28px minmax(150px, 1.4fr) minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+
+.production-row:last-child {
+  border-bottom: 0;
+}
+
+.production-row:hover {
+  background: color-mix(in srgb, var(--kubo-carbon) 2.2%, transparent);
+}
+
+.production-index {
+  color: var(--admin-faint);
+  font-size: 8px;
+}
+
+.production-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.production-main strong,
+.custom-main strong,
+.activity-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.production-main span,
+.custom-main span,
+.activity-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+}
+
+.production-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--admin-faint);
+  font-size: 9px;
+}
+
+/* ========== PRODUCTS ========== */
+
+.product-row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 11px;
+  padding: 11px var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.product-row:last-child {
+  border-bottom: 0;
+}
+
+.product-thumb {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: color-mix(in srgb, var(--kubo-carbon) 4%, var(--kubo-ivory));
+  border: 1px solid var(--admin-border);
+  border-radius: 7px;
+}
+
+.product-thumb span {
+  display: block;
+  width: 17px;
+  height: 17px;
+  background: var(--kubo-carbon);
+  clip-path: polygon(0 22%, 63% 0, 100% 24%, 100% 79%, 38% 100%, 0 76%);
+}
+
+.product-copy {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.product-title-line,
+.product-meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-title-line strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.product-title-line span {
+  flex: 0 0 auto;
+  color: var(--admin-muted);
+  font-size: 9px;
+}
+
+.product-meta-line {
+  color: var(--admin-faint);
+  font-size: 9px;
+}
+
+.product-meta-line strong {
+  color: var(--admin-muted);
+  font-weight: 600;
+}
+
+.progress-track {
+  height: 3px;
+  margin-top: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  border-radius: 99px;
+}
+
+.progress-track span {
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  background: var(--kubo-red);
+  border-radius: inherit;
+  transform-origin: left;
+}
+
+.has-js .progress-track span {
+  transform: scaleX(0);
+}
+
+.ui-ready .progress-track span {
+  animation: progress-in 560ms 160ms var(--ease-emphasized) forwards;
+}
+
+@keyframes progress-in {
+  to { transform: scaleX(1); }
+}
+
+/* ========== CUSTOM ========== */
+
+.custom-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto 48px;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 8px var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+
+.custom-row:last-child {
+  border-bottom: 0;
+}
+
+.custom-row:hover {
+  background: color-mix(in srgb, var(--kubo-blue) 6%, transparent);
+}
+
+.custom-symbol {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 20%, transparent);
+  border-radius: 7px;
+}
+
+.custom-main,
+.activity-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.custom-due {
+  justify-self: end;
+  color: var(--admin-faint);
+  font-size: 9px;
+}
+
+/* ========== ACTIVITY ========== */
+
+.activity-list {
+  padding: 2px 0;
+}
+
+.activity-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 60px;
+  padding: 6px var(--space-3);
+}
+
+.activity-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.activity-icon.tone-red { color: var(--kubo-ivory); background: var(--kubo-red); }
+.activity-icon.tone-carbon { color: var(--kubo-ivory); background: var(--kubo-carbon); }
+.activity-icon.tone-blue { color: var(--kubo-carbon); background: var(--kubo-blue); }
+
+.activity-row time {
+  align-self: start;
+  margin-top: 8px;
+  color: var(--admin-faint);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+/* ========== PLACEHOLDER (rutas sin desarrollar) ========== */
+
+.placeholder-panel {
+  position: relative;
+  /* z-index:0 (no solo position:relative) crea contexto de apilamiento propio: así el
+     z-index:-1 de KuboConstructionGrid (variant="placeholder") queda contenido aquí y pinta
+     detrás de .placeholder-inner sin escapar por debajo de otro contenido de la página. */
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  min-height: 400px;
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+}
+
+.placeholder-inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-width: 420px;
+}
+
+.placeholder-symbol {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  color: var(--kubo-ivory);
+  background: var(--kubo-carbon);
+  clip-path: polygon(0 18%, 68% 0, 100% 20%, 100% 82%, 32% 100%, 0 80%);
+}
+
+.placeholder-panel h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -.015em;
+}
+
+.placeholder-panel p {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.placeholder-tag {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 9.5px;
+  letter-spacing: .06em;
+}
+
+/* ========== RESPONSIVE ==========
+   Tiers alineados al brief: ≥1280 Bento completo (reglas base arriba) · 1024–1279 no fuerza
+   Bento ancho · 768–1023 simplifica a 12 col (6/6 solo si ambos quedan legibles) · <768 columna
+   única, sin spans desktop. El span nunca cambia por decoración: solo por legibilidad/ajuste. */
+
+@media (max-width: 1279px) {
+  :root {
+    --sidebar-width: 224px;
+  }
+
+  /* KPI 1024-1279: el patrón desktop (featured span-4 + secundarias span-2/12) se probó
+     ilegible en este rango — con el riel a 224px el track de una secundaria queda por debajo
+     de ~120px de contenido real, insuficiente para "COTIZACIONES PENDIENTES" + su valor sin
+     desbordar. Fallback: Ventas ocupa la fila completa y las 4 secundarias pasan a una fila
+     propia de 4 columnas iguales (rejilla racional, no decorativa — prioriza legibilidad sobre
+     preservar el patrón desktop). El sparkline de las secundarias ya está oculto de forma
+     incondicional desde la regla base (ver .kpi-card:not(.kpi-featured) .sparkline arriba);
+     nada que repetir aquí. */
+  .kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .kpi-featured {
+    grid-column: 1 / -1;
+  }
+
+  .kpi-card:not(.kpi-featured) {
+    grid-column: span 1;
+  }
+
+  /* Seguimiento: Productos 6 / Custom 6 / Actividad 12 (mandato explícito del brief para este
+     tier). Ventas 8/4 y Pedidos 7/5 (dentro de .analytics-surface/.operations-surface) se
+     conservan: siguen siendo legibles en este ancho. */
+  .panel-products { grid-column: span 6; }
+  .panel-custom { grid-column: span 6; }
+  .panel-activity { grid-column: span 12; }
+
+  /* Fila 3 (Productos/Custom) y fila 4 (Actividad) nuevas — las filas 1/2 (analytics-surface,
+     operations-surface, cada una una única fila real) no cambian, por eso --kcg-hline-* no
+     necesita redefinirse aquí (línea 2 y línea 3 siguen siendo la costura real Ventas/Canal →
+     Pedidos/Producción). */
+  .dashboard-grid {
+    grid-template-rows: repeat(4, auto);
+  }
+
+  .activity-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Tablet: el KPI grid hereda el fallback de 4 columnas del tier ≤1279 (sigue siendo el
+     racional correcto aquí, incluso más cómodo que a 1024-1279 — no hace falta otro ajuste).
+     analytics-surface/operations-surface conservan su split interno 8fr/4fr y 7fr/5fr: a este
+     ancho el contenido real (sidebar pasa a drawer, ancho completo disponible) sigue siendo
+     legible lado a lado; solo Productos/Custom se recolocan a 6/6. */
+  .panel-products,
+  .panel-custom {
+    grid-column: span 6;
+  }
+
+  .panel-activity {
+    grid-column: span 12;
+  }
+
+  /* 4 filas reales: analytics-surface (Ventas|Canal, una sola fila — internamente lado a lado),
+     operations-surface (Pedidos|Producción, ídem), Productos+Custom, Actividad. Antes eran 6
+     filas porque Ventas/Canal/Pedidos/Producción se apilaban como 4 paneles independientes; el
+     Connected Bento de esta iteración los redujo a 2 superficies reales, así que la costura
+     financiero→operación→catálogo vuelve a caer en las MISMAS líneas que en desktop (línea 2 y
+     línea 3 de un grid de 4 filas) — --kcg-hline-* ya no necesita redefinirse en este tier,
+     hereda los valores base (1/3 y 2/4) de .dashboard-grid. */
+  .dashboard-grid {
+    grid-template-rows: repeat(4, auto);
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-content {
+    padding: var(--space-5) var(--space-4) var(--space-5);
+  }
+
+  .page-heading {
+    margin-bottom: var(--space-5);
+  }
+
+  .page-heading h1 {
+    font-size: 30px;
+  }
+
+  .page-heading p {
+    font-size: 13px;
+  }
+
+  .heading-actions {
+    display: none;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .kpi-featured {
+    grid-column: 1 / -1;
+  }
+
+  /* Grid de 2 columnas a este ancho: el span:2 base (pensado para el grid de 12 columnas de
+     desktop) tomaría las 2 columnas enteras y apilaría las secundarias de a una — con span:1
+     quedan 2 por fila, dando el 2×2 pedido (Pedidos|Custom / Cotizaciones|Producción, orden
+     natural del array de datos, sin reordenar nada por CSS). */
+  .kpi-card:not(.kpi-featured) {
+    grid-column: span 1;
+  }
+
+  .dashboard-grid {
+    gap: var(--space-3);
+    /* 5 filas reales: analytics-surface, operations-surface, Productos, Custom, Actividad —
+       Productos/Custom dejan de compartir fila 6/6 aquí y pasan a span 12 cada uno. Los cortes
+       semánticos (--kcg-hline-*) heredan del tier ≤1023: siguen cayendo en el mismo lugar
+       (financiero → operación → catálogo), no necesitan redefinirse otra vez aquí. */
+    grid-template-rows: repeat(5, auto);
+  }
+
+  .panel,
+  .panel-products,
+  .panel-custom {
+    grid-column: span 12;
+  }
+
+  /* Connected Bento en mobile: NO se revierte a tarjetas sueltas — el wrapper conserva un
+     único borde exterior, solo cambia el split interno de lado-a-lado (8fr/4fr, 7fr/5fr) a
+     apilado, y el divisor interno pasa de vertical (border-left) a horizontal (border-top). */
+  .analytics-surface,
+  .operations-surface {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-surface .panel-revenue,
+  .operations-surface .panel-production {
+    border-left: 0;
+    border-top: 1px solid var(--admin-border);
+  }
+
+  /* Corrige la regla ".panel { grid-column: span 12 }" de arriba: panel-sales/revenue/orders/
+     production siguen llevando la clase .panel (wiring intacto) pero ya no son hijos directos
+     de .dashboard-grid (12 columnas) — ahora viven dentro de analytics-surface/operations-
+     surface, que a este ancho es un grid de 1 sola columna explícita. "span 12" ahí generaría
+     11 columnas implícitas fantasma. Selector más específico (2 clases) gana sin depender del
+     orden de cascada. */
+  .analytics-surface .panel-sales,
+  .analytics-surface .panel-revenue,
+  .operations-surface .panel-orders,
+  .operations-surface .panel-production {
+    grid-column: auto;
+  }
+
+  .panel-header {
+    min-height: 54px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .panel-header h2 {
+    font-size: 15px;
+  }
+
+  .sales-chart-wrap {
+    --chart-pad-top: var(--space-3);
+    --chart-pad-right: var(--space-2);
+    --chart-pad-bottom: 4px;
+    --chart-pad-left: 36px;
+    padding: var(--chart-pad-top) var(--chart-pad-right) var(--chart-pad-bottom) var(--chart-pad-left);
+    overflow: hidden;
+  }
+
+  .sales-chart {
+    height: 180px;
+  }
+
+  .chart-axis-labels {
+    left: 8px;
+    top: var(--space-3);
+    bottom: 25px;
+  }
+
+  .chart-x-labels {
+    font-size: 7px;
+  }
+
+  .sales-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .summary-stat:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  }
+
+  .summary-stat:nth-child(4) {
+    border-top: 1px solid color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  }
+
+  .desktop-table {
+    display: none;
+  }
+
+  .mobile-list {
+    display: grid;
+  }
+
+  .mobile-data-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 62px;
+    padding: 10px var(--space-4);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--admin-border);
+    cursor: pointer;
+    font: inherit;
+    transition: background-color 140ms ease;
+  }
+
+  .mobile-data-card:hover {
+    background: color-mix(in srgb, var(--kubo-carbon) 2.4%, transparent);
+  }
+
+  .mobile-data-card:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-data-card > div {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .mobile-data-card strong:not(.mono-strong) {
+    font-family: var(--font-kubo-sans);
+    font-size: 13px;
+  }
+
+  .mobile-data-card span:not(.status-badge):not(.status-chip) {
+    overflow: hidden;
+    color: var(--admin-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .mobile-card-right {
+    justify-items: end;
+    flex: 0 0 auto;
+  }
+
+  .mobile-card-right > strong {
+    font-family: var(--font-kubo-mono);
+    font-size: 11px;
+  }
+
+  .production-row {
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .production-tech {
+    grid-column: 2 / -1;
+    margin-top: -4px;
+  }
+
+  .custom-row {
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+  }
+
+  .custom-due {
+    display: none;
+  }
+
+  .activity-list {
+    grid-template-columns: 1fr;
+    padding: 2px 0;
+  }
+}
+
+/* 390/360 (los anchos mínimos pedidos por el brief) sí soportan cómodamente el 2×2 de las 4
+   KPI secundarias: el sparkline ya se retiró en el tier de 1279px y los valores demo son
+   cortos ("12", "72%"...). Por debajo de eso (fuera del rango probado) se cae a 1 columna. */
+@media (max-width: 359px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-featured {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .panel-header .text-link {
+    max-width: 92px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .product-row {
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .has-js .sparkline-line,
+  .has-js .sales-line,
+  .has-js .progress-track span {
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 0;
+  }
+
+  .sales-chart-wrap.is-switching,
+  .sales-summary.is-switching,
+  .donut-zone.is-switching {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   FINANZAS · GASTOS (ExpensesWorkspace.svelte y componentes hijos)
+   Sección autocontenida: primitivas de formulario (no existían antes — Gastos es el primer
+   formulario real del admin), resumen Connected Bento, toolbar/filtros, listado, drawer de
+   detalle, dropzone de adjunto, date picker y diálogos (exportar / confirmar eliminación).
+   Reutiliza tokens y patrones ya existentes (radius/space/motion, .mini-popover, .drawer-*,
+   .status-badge, .table-shell, .mobile-data-card) — ver comentarios puntuales donde aplica.
+   ========================================================= */
+
+/* ---------- Resumen (Connected Bento, 4 métricas) ---------- */
+
+.expenses-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: var(--space-4);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.summary-metric {
+  min-width: 0;
+  padding: var(--space-3) var(--space-5);
+  border-left: 1px solid var(--admin-border);
+}
+
+.summary-metric:first-child {
+  border-left: 0;
+}
+
+.summary-metric-label {
+  margin: 0 0 6px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: 0;
+}
+
+.summary-metric-value {
+  display: block;
+  font-family: var(--font-kubo-sans);
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+
+.summary-metric-meta {
+  margin: 3px 0 0;
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-sans);
+  font-size: 11.5px;
+}
+
+/* ---------- Toolbar (superficie única) ---------- */
+
+.expenses-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+}
+
+.toolbar-search {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 160px;
+}
+
+.toolbar-search .search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-faint);
+  pointer-events: none;
+}
+
+.toolbar-search input {
+  width: 100%;
+  height: 38px;
+  padding: 0 var(--space-3) 0 34px;
+  color: var(--kubo-carbon);
+  background: var(--admin-canvas);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  transition: border-color var(--dur-hover) ease;
+}
+
+.toolbar-search input::placeholder {
+  color: var(--admin-placeholder);
+}
+
+.toolbar-search input:hover {
+  border-color: var(--admin-border-strong);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.toolbar-clear-link {
+  margin-left: auto;
+}
+
+.filter-count-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--kubo-red);
+  border-radius: 8px;
+  color: var(--kubo-ivory);
+  font-family: var(--font-kubo-mono);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.active-filters-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 4px 0 10px;
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+  border: 1px solid var(--admin-border);
+  border-radius: 7px;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.filter-chip button {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--admin-faint);
+  cursor: pointer;
+  transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+}
+
+.filter-chip button:hover {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 10%, transparent);
+}
+
+/* ---------- Overlays flotantes (FloatingPanel: popover/combobox/calendar/tooltip) ----------
+   Se portan a document.body (ver lib/ui/portal.ts) y se posicionan con `position:fixed` (ver
+   lib/ui/floating.ts) — por diseño, ya no dependen de ningún ancestro para no quedar recortados
+   (era el bug de Periodo/Filtros). z-index por encima de modales (100) para que un Combobox
+   abierto dentro de un modal siga siendo visible. */
+
+.floating-panel-backdrop {
+  display: none;
+}
+
+.floating-panel {
+  position: fixed;
+  z-index: 140;
+  overflow: hidden;
+  background: var(--admin-canvas);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  animation: popover-in var(--motion-fast) var(--motion-ease) both;
+}
+
+.floating-panel--carbon {
+  background: var(--kubo-carbon);
+  border-color: rgb(252 249 244 / 0.14);
+  color: var(--kubo-ivory);
+  box-shadow: 0 18px 44px rgb(0 0 0 / .32);
+}
+
+.filters-panel,
+.period-panel {
+  max-height: 70vh;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.date-popover {
+  padding: var(--space-3);
+}
+
+.filters-panel-section {
+  display: grid;
+  gap: 6px;
+}
+
+.filters-panel-section + .filters-panel-section {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--admin-border);
+}
+
+.filters-panel-title {
+  margin: 0;
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+
+/* ---------- Combobox (Categoría/Destino/Medio/Comprobante/Relacionado/Prioridad/Estado/Unidad) ----------
+   Trigger claro sobre blanco (mismo lenguaje que .text-input/.select-input); panel flotante
+   carbón vía FloatingPanel variant="carbon" — dirección visual de referencia adaptada a KUBO. */
+
+.combobox-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: var(--form-control-height);
+  padding: 0 12px;
+  color: var(--kubo-carbon);
+  background: var(--admin-canvas);
+  border: 1px solid var(--form-control-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  text-align: left;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease;
+}
+
+.combobox-trigger:hover {
+  border-color: color-mix(in srgb, var(--kubo-carbon) 28%, var(--admin-border-strong));
+}
+
+.combobox-trigger:focus-visible {
+  outline: 2px solid var(--kubo-red);
+  outline-offset: 1px;
+}
+
+.combobox-trigger[aria-invalid='true'] {
+  border-color: var(--kubo-red);
+}
+
+.combobox-trigger:disabled {
+  color: var(--admin-faint);
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.combobox-trigger-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.combobox-trigger.is-placeholder .combobox-trigger-value {
+  color: var(--admin-placeholder);
+}
+
+.combobox-trigger svg:last-child {
+  flex: 0 0 auto;
+  color: var(--admin-faint);
+}
+
+.combobox-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 6px;
+}
+
+.combobox-search {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding: 0 10px;
+  height: 36px;
+  background: rgb(252 249 244 / 0.06);
+  border: 1px solid rgb(252 249 244 / 0.14);
+  border-radius: var(--radius-xs);
+  color: rgb(252 249 244 / 0.55);
+}
+
+.combobox-search-input {
+  flex: 1 1 auto;
+  height: 100%;
+  color: var(--kubo-ivory);
+  background: transparent;
+  border: 0;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+}
+
+.combobox-search-input::placeholder {
+  color: rgb(252 249 244 / 0.4);
+}
+
+.combobox-search-input:focus {
+  outline: none;
+}
+
+.combobox-listbox {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  /* Scrollbar oscura integrada al panel carbón — sin esto Chrome/Edge dibujan la scrollbar clara
+     del sistema, que sobre fondo carbón se ve como una barra blanca ajena al tema. */
+  scrollbar-width: thin;
+  scrollbar-color: rgb(252 249 244 / .25) transparent;
+}
+
+.combobox-listbox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.combobox-listbox::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.combobox-listbox::-webkit-scrollbar-thumb {
+  background-color: rgb(252 249 244 / .25);
+  border-radius: 3px;
+}
+
+.combobox-listbox::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(252 249 244 / .4);
+}
+
+.combobox-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 37px;
+  padding: 0 11px;
+  border-radius: 7px;
+  color: rgb(252 249 244 / 0.88);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 450;
+}
+
+.combobox-option.is-active {
+  background: rgb(237 37 78 / 0.09);
+}
+
+.combobox-option.is-selected {
+  color: var(--kubo-ivory);
+  background: rgb(237 37 78 / 0.14);
+  font-weight: 550;
+}
+
+.combobox-option svg {
+  flex: 0 0 auto;
+  color: var(--kubo-red);
+}
+
+.combobox-empty {
+  padding: 10px 11px;
+  color: rgb(252 249 244 / 0.45);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+}
+
+.floating-panel--carbon .text-link {
+  color: var(--kubo-blue);
+}
+
+.floating-panel--carbon .panel-action {
+  color: rgb(252 249 244 / 0.7);
+}
+
+.floating-panel--carbon .panel-action:hover {
+  color: var(--kubo-ivory);
+  background: rgb(252 249 244 / 0.08);
+}
+
+/* ---------- Control Mensual / Trimestral (fuente única de periodo) ---------- */
+
+.period-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.period-mode-toggle {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+}
+
+.period-mode-btn {
+  height: 32px;
+  padding: 0 12px;
+  color: var(--admin-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 550;
+  transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+}
+
+.period-mode-btn.is-active {
+  color: var(--kubo-carbon);
+  background: var(--admin-canvas);
+  box-shadow: 0 1px 2px rgb(20 20 20 / .08);
+}
+
+.period-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.period-trigger-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.period-trigger-sub {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10px;
+}
+
+.period-panel {
+  padding: var(--space-3);
+}
+
+.period-panel-year {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.period-panel-year-label {
+  color: var(--kubo-ivory);
+  font-family: var(--font-kubo-sans);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.period-panel-grid {
+  display: grid;
+  gap: 4px;
+}
+
+.period-panel-grid--months {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.period-panel-grid--quarters {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.period-panel-cell {
+  height: 34px;
+  color: rgb(252 249 244 / 0.82);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  transition: background-color var(--dur-hover) ease;
+}
+
+.period-panel-cell:hover {
+  background: rgb(252 249 244 / 0.08);
+}
+
+.period-panel-cell.is-selected {
+  color: var(--kubo-ivory);
+  background: rgb(237 37 78 / 0.18);
+  font-weight: 600;
+}
+
+.period-panel-footer {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgb(252 249 244 / 0.1);
+  text-align: center;
+}
+
+/* ---------- Header (2 zonas: título | Mensual-Trimestral + Exportar + Registrar gasto) ----------
+   Título, tabs y acciones viven en el mismo contenedor grid para poder reordenarlos con CSS por
+   breakpoint sin duplicar markup: mobile apila título → tabs → periodo → acciones; desktop >=1024
+   pone acciones junto al título y tabs abajo, a todo el ancho. */
+
+.expenses-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "title" "tabs" "actions";
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  min-width: 0;
+}
+
+.expenses-header > * {
+  min-width: 0;
+}
+
+.expenses-header .page-heading {
+  grid-area: title;
+  margin-bottom: 0;
+}
+
+.expenses-header .expenses-tabs {
+  grid-area: tabs;
+  margin-bottom: 0;
+}
+
+.expenses-header-actions {
+  grid-area: actions;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.expenses-header-actions .period-control {
+  justify-content: space-between;
+}
+
+.expenses-header-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.expenses-header-buttons .primary-button {
+  flex: 1 1 auto;
+}
+
+.expenses-header-buttons .secondary-button {
+  flex: 0 0 auto;
+}
+
+@media (min-width: 768px) {
+  .expenses-header-actions {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .expenses-header-actions .period-control {
+    justify-content: flex-start;
+  }
+
+  .expenses-header-buttons .primary-button,
+  .expenses-header-buttons .secondary-button {
+    flex: 0 0 auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .expenses-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title  actions"
+      "tabs   tabs";
+    align-items: start;
+  }
+}
+
+/* ---------- Tabs (Registrados / Compras pendientes) ---------- */
+
+.expenses-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.expenses-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 2px 12px;
+  color: var(--admin-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 550;
+  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+.expenses-tab:hover {
+  color: var(--kubo-carbon);
+}
+
+.expenses-tab.is-active {
+  color: var(--kubo-carbon);
+  border-bottom-color: var(--kubo-red);
+}
+
+.expenses-tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: color-mix(in srgb, var(--kubo-carbon) 7%, transparent);
+  border-radius: 10px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.expenses-tab.is-active .expenses-tab-count {
+  color: var(--kubo-ivory);
+  background: var(--kubo-carbon);
+}
+
+/* ---------- Resumen + chart en una sola superficie Connected Bento ---------- */
+
+.expenses-overview {
+  margin-bottom: var(--space-4);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.expenses-overview .expenses-summary,
+.purchases-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.expenses-overview .expenses-summary {
+  border: 0;
+  border-radius: 0;
+}
+
+.overview-chart-section {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--admin-border);
+}
+
+.overview-chart-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.overview-chart-title {
+  margin: 0;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.overview-chart-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.overview-chart-period {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.overview-chart-top {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-sans);
+  font-size: 11px;
+}
+
+/* ---------- Compras pendientes: resumen + mini distribución (misma superficie Connected Bento) ---------- */
+
+.purchases-overview {
+  margin-bottom: var(--space-4);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.purchases-overview .purchases-summary {
+  border: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.purchases-distribution {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--admin-border);
+}
+
+.purchases-distribution-title {
+  margin: 0 0 var(--space-3);
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.priority-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.priority-bar-row {
+  display: grid;
+  grid-template-columns: 88px 1fr 26px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.priority-bar-label.priority-chip {
+  font-size: 12px;
+}
+
+.priority-bar-track {
+  position: relative;
+  height: 8px;
+  background: color-mix(in srgb, var(--kubo-carbon) 7%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.priority-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  border-radius: 2px;
+  transition: width var(--motion-panel) var(--motion-ease);
+}
+
+.priority-bar-fill-high {
+  background: var(--kubo-red);
+}
+
+.priority-bar-fill-medium {
+  background: var(--kubo-carbon);
+}
+
+.priority-bar-fill-low {
+  background: var(--kubo-blue);
+}
+
+.priority-bar-count {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- ExpensesBarChart (SVG propio, sin librería de charts) ---------- */
+
+.chart-wrap {
+  position: relative;
+}
+
+.chart-empty {
+  margin: 0;
+  padding: var(--space-6) 0;
+  color: var(--admin-muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Filas horizontales: HTML real (label/valor siempre legibles, sin truncar) + un <svg> propio
+   solo para la barra en sí — la altura total es el flujo natural de filas, sin viewBox fijo. */
+.chart-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart-row-item {
+  min-width: 0;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 34%) 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 6px 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--dur-hover) ease, opacity var(--dur-hover) ease;
+}
+
+.chart-row:hover {
+  background: color-mix(in srgb, var(--kubo-carbon) 4%, transparent);
+}
+
+.chart-row:focus-visible {
+  outline: 2px solid var(--kubo-red);
+  outline-offset: 2px;
+}
+
+.chart-row.is-dimmed {
+  opacity: .55;
+}
+
+.chart-row-label {
+  min-width: 0;
+  overflow-wrap: break-word;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 550;
+  line-height: 1.25;
+}
+
+.chart-row-track {
+  min-width: 0;
+}
+
+.chart-bar-svg {
+  display: block;
+  width: 100%;
+  height: 18px;
+  overflow: visible;
+}
+
+.chart-bar-track {
+  fill: color-mix(in srgb, var(--kubo-carbon) 7%, transparent);
+}
+
+.chart-bar-fill {
+  fill: color-mix(in srgb, var(--kubo-carbon) 72%, white);
+  transition: width var(--motion-panel) var(--motion-ease), fill var(--dur-hover) ease;
+}
+
+.chart-row.is-active .chart-bar-fill {
+  fill: var(--kubo-red);
+}
+
+.chart-row-value {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.chart-tooltip-panel {
+  padding: 10px 12px;
+  pointer-events: none;
+}
+
+.chart-tooltip-label {
+  margin: 0 0 3px;
+  color: var(--kubo-ivory);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.chart-tooltip-amount {
+  margin: 0;
+  color: var(--kubo-ivory);
+  font-family: var(--font-kubo-sans);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.chart-tooltip-share {
+  margin: 2px 0 0;
+  color: rgb(252 249 244 / 0.6);
+  font-family: var(--font-kubo-sans);
+  font-size: 11px;
+}
+
+/* ---------- Prioridad / Estado (Compras pendientes) — nunca solo color, siempre texto ---------- */
+
+.priority-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 550;
+}
+
+.priority-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--admin-faint);
+}
+
+.priority-high .priority-dot {
+  background: var(--kubo-red);
+}
+
+.priority-high {
+  color: var(--kubo-carbon);
+}
+
+.priority-medium .priority-dot {
+  background: var(--kubo-carbon);
+}
+
+.priority-low .priority-dot {
+  background: var(--kubo-blue);
+}
+
+.status-chip {
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+}
+
+/* "En revisión" — celeste muy tenue, contenido (más claro que "Cotizando", que ya está en curso). */
+.status-chip.status-review {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 14%, transparent);
+}
+
+.status-chip.status-pending {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+}
+
+.status-chip.status-quoting {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 16%, transparent);
+}
+
+.status-chip.status-approved {
+  color: var(--kubo-ivory);
+  background: var(--kubo-carbon);
+}
+
+.status-chip.status-purchased {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 20%, transparent);
+}
+
+.status-chip.status-cancelled {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 12%, transparent);
+}
+
+.status-chip.status-cancelled::before {
+  background: var(--kubo-red);
+}
+
+.purchase-row {
+  cursor: pointer;
+}
+
+/* ---------- Tamaños de Modal (Registrar gasto / Añadir compra) ----------
+   Selector compuesto (`.modal-panel.modal-panel--form`) a propósito: la base `.modal-panel` (ver
+   más abajo, sección "Modal genérico") también fija width/max-height, y al tener igual
+   especificidad que un modificador de una sola clase, la regla que aparece después en el archivo
+   ganaría la cascada — eso dejaba el modal de formulario en 480px en vez de 760px. El selector
+   compuesto sube la especificidad para que el tamaño del formulario gane siempre, sin depender
+   del orden en el archivo. */
+
+.modal-panel.modal-panel--form {
+  width: clamp(720px, 58vw, 800px);
+  max-height: min(860px, calc(100dvh - 48px));
+  border-radius: var(--radius-md);
+}
+
+.modal-panel.modal-panel--compact {
+  width: min(560px, 100%);
+  max-height: min(90vh, 700px);
+  border-radius: var(--radius-md);
+}
+
+/* Cualquier pantalla <1024px (tablet y mobile): el modal es un popup centrado con margen fijo de
+   16px por lado, nunca fullscreen — el ancho se adapta al viewport pero conserva radius/borde/
+   sombra del modal de escritorio. */
+@media (max-width: 1023px) {
+  .modal-panel.modal-panel--form,
+  .modal-panel.modal-panel--compact {
+    width: calc(100vw - 32px);
+    max-width: 720px;
+    max-height: calc(100dvh - 32px);
+    border-radius: var(--radius-md);
+  }
+}
+
+.expense-form-panel .modal-body {
+  padding-bottom: var(--space-3);
+}
+
+/* ---------- ModalFooter (Total + acciones) ----------
+   Desktop: bloque "Total del gasto" (label sobre valor) a la izquierda, acciones a la derecha, en
+   una sola fila — antes eran dos filas separadas con los botones estirados a todo el ancho, sin
+   relación visual clara con el total. Mobile: total en una sola línea (label...valor) arriba,
+   luego los botones apilados a todo ancho con "Guardar" primero (ver .modal-footer más abajo para
+   el mismo criterio aplicado al resto de modales). */
+/* Compuesto (`.modal-footer.expense-form-footer`): igual razón que `.modal-panel--form` arriba —
+   `.modal-footer` genérico (ver sección "Modal genérico") define su propio `justify-content` y
+   aparece después en el archivo; sin subir la especificidad acá esa regla ganaría por orden. */
+.modal-footer.expense-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.expense-form-footer-total {
+  display: grid;
+  gap: 2px;
+}
+
+.expense-form-footer-total-label {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 550;
+}
+
+.expense-form-footer-total-value {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 17px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Distinto de `.expense-form-footer-actions` (Editar/Eliminar de los Detail Drawer, que sí llenan
+   el ancho 50/50 — ver esa regla más abajo) — acá los botones van al lado del bloque de Total,
+   nunca estirados a ancho completo en desktop. */
+.expense-form-footer-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--space-2);
+}
+
+@media (max-width: 639px) {
+  /* Selector compuesto: gana sobre la regla mobile de `.modal-footer` (más abajo en el archivo,
+     misma especificidad si fuera solo `.expense-form-footer`) — este footer necesita quedarse en
+     columna normal (total arriba, acciones abajo), no en column-reverse. Umbral 639px: en tablet
+     (640–1023) las acciones se quedan a la derecha, igual que desktop. */
+  .modal-footer.expense-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .expense-form-footer-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .expense-form-footer-buttons {
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+
+  .expense-form-footer-buttons .secondary-button,
+  .expense-form-footer-buttons .primary-button {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+}
+
+/* Editar/Eliminar (ExpenseDetailDrawer) y Editar/Cancelar compra (PendingPurchaseDetailDrawer) —
+   estos dos SÍ llenan el ancho completo del footer del drawer, 50/50 (a diferencia del footer del
+   Modal de formulario, ver `.expense-form-footer-buttons` arriba). */
+.expense-form-footer-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.expense-form-footer-actions .secondary-button,
+.expense-form-footer-actions .primary-button,
+.expense-form-footer-actions .danger-button {
+  flex: 1 1 0;
+}
+
+/* ---------- Primitivas de formulario (primer formulario real del admin) ---------- */
+
+.form-section + .form-section {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--admin-border);
+}
+
+.form-section-title {
+  margin: 0 0 var(--space-3);
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: .07em;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Excluye pares dentro de `.field-row`: ahí el espaciado entre celdas lo da el `gap` de la fila,
+   no este margen de apilado vertical — si no se excluye, la segunda celda (ej. Unidad) hereda un
+   margin-top que la desalinea de su par (ej. Cantidad comprada), rompiendo la baseline compartida
+   del FormGrid. */
+.field + .field:not(.field-row > .field) {
+  margin-top: var(--space-5);
+}
+
+/* FormGrid: contrato compartido de formularios de admin — cada celda contiene su FormField
+   completo (label + control + hint/error) y ambas celdas de una fila arrancan en la misma
+   baseline vertical. Pareja 6/6 en desktop (Cantidad|Unidad, Monto estimado|Fecha) — en mobile
+   pasa a una sola columna, cada campo a todo ancho (ver media query más abajo), nunca
+   comprimidos. */
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.field-row > .field {
+  margin-top: 0;
+}
+
+.field-row + .field-row,
+.field-row + .field,
+.field + .field-row {
+  margin-top: var(--space-5);
+}
+
+/* Tablet Y mobile comparten 1 columna (<1024px) — a partir de 640-1023 sobra ancho pero no da
+   para dos campos angostos cómodos de leer, así que la pareja 6/6 solo aplica en desktop real. */
+@media (max-width: 1023px) {
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field-required {
+  color: var(--kubo-red);
+}
+
+.field-hint {
+  margin: 0;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: var(--kubo-red);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* FormField control — un solo token de altura/borde para input/select/combobox/date trigger (ver
+   también .combobox-trigger y .date-trigger más abajo, que comparten exactamente estos mismos
+   valores) para que nunca convivan un select de 41px y un input de 44px en la misma fila. */
+.text-input,
+.select-input,
+.textarea-input {
+  width: 100%;
+  color: var(--kubo-carbon);
+  background: var(--admin-canvas);
+  border: 1px solid var(--form-control-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease;
+}
+
+.text-input,
+.select-input {
+  height: var(--form-control-height);
+  padding: 0 var(--space-3);
+}
+
+.text-input::placeholder,
+.textarea-input::placeholder {
+  color: var(--admin-placeholder);
+}
+
+.text-input:hover,
+.select-input:hover,
+.textarea-input:hover {
+  border-color: color-mix(in srgb, var(--kubo-carbon) 28%, var(--admin-border-strong));
+}
+
+.text-input[aria-invalid='true'],
+.select-input[aria-invalid='true'],
+.textarea-input[aria-invalid='true'] {
+  border-color: var(--kubo-red);
+}
+
+.select-input {
+  appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
+.textarea-input {
+  min-height: 84px;
+  padding: 10px var(--space-3);
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.money-input-wrap {
+  position: relative;
+}
+
+.money-input-wrap .money-prefix {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-mono);
+  font-size: 13.5px;
+  pointer-events: none;
+}
+
+.money-input-wrap input {
+  padding-left: 36px;
+  font-family: var(--font-kubo-mono);
+  text-align: left;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkbox-native,
+.radio-native {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  appearance: none;
+  display: grid;
+  place-items: center;
+  background: var(--admin-canvas);
+  border: 1.5px solid var(--admin-border-strong);
+  cursor: pointer;
+  transition: background-color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+.checkbox-native {
+  border-radius: 5px;
+}
+
+.checkbox-native:checked {
+  background: var(--kubo-carbon);
+  border-color: var(--kubo-carbon);
+}
+
+.checkbox-native:checked::after {
+  content: '';
+  width: 10px;
+  height: 5px;
+  border-left: 2px solid var(--kubo-ivory);
+  border-bottom: 2px solid var(--kubo-ivory);
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+.radio-native {
+  border-radius: 50%;
+}
+
+.radio-native:checked {
+  border-color: var(--kubo-carbon);
+}
+
+.radio-native:checked::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--kubo-carbon);
+}
+
+.checkbox-field-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.checkbox-field-copy strong {
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.checkbox-field-copy span {
+  color: var(--admin-muted);
+  font-size: 12px;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.radio-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+}
+
+/* Reveal sutil para campos condicionales (movilidad, comprobante) — reutiliza los tokens de
+   motion centralizados, nunca una animación nueva/decorativa. */
+.conditional-fields {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--kubo-carbon) 2.4%, transparent);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  animation: conditional-reveal var(--motion-normal) var(--motion-ease) both;
+}
+
+@keyframes conditional-reveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.total-breakdown {
+  display: grid;
+  gap: 6px;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--kubo-carbon) 2.4%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.total-breakdown-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  color: var(--admin-muted);
+}
+
+.total-breakdown-row span:last-child {
+  font-family: var(--font-kubo-mono);
+}
+
+.total-breakdown-row.is-total {
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1px solid var(--admin-border-strong);
+  color: var(--kubo-carbon);
+  font-size: 15.5px;
+  font-weight: 650;
+}
+
+.total-breakdown-row.is-total span:last-child {
+  font-size: 17px;
+}
+
+/* ---------- Dropzone / adjunto ---------- */
+
+.dropzone {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  min-height: 116px;
+  padding: var(--space-5);
+  text-align: center;
+  background: var(--admin-canvas);
+  border: 1.5px dashed var(--admin-border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease;
+}
+
+.dropzone:hover,
+.dropzone.is-drag-active {
+  background: color-mix(in srgb, var(--kubo-red) 4%, transparent);
+  border-color: var(--kubo-red);
+}
+
+.dropzone.is-error {
+  border-color: var(--kubo-red);
+  border-style: solid;
+}
+
+.dropzone-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.dropzone-title {
+  margin: 0;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.dropzone-hint {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 12px;
+}
+
+.attachment-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px var(--space-3);
+  background: var(--admin-canvas);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.attachment-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  border-radius: var(--radius-xs);
+}
+
+.attachment-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.attachment-name {
+  overflow: hidden;
+  color: var(--kubo-carbon);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.attachment-size {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+}
+
+.attachment-actions {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.attachment-row.is-plain {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+/* ---------- Date picker (ExpenseDatePicker.svelte) ---------- */
+
+.date-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: var(--form-control-height);
+  padding: 0 var(--space-3);
+  color: var(--kubo-carbon);
+  background: var(--admin-canvas);
+  border: 1px solid var(--form-control-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  transition: border-color var(--dur-hover) ease;
+}
+
+.date-trigger:hover {
+  border-color: color-mix(in srgb, var(--kubo-carbon) 28%, var(--admin-border-strong));
+}
+
+.date-trigger[aria-invalid='true'] {
+  border-color: var(--kubo-red);
+}
+
+.date-trigger-value {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.calendar-month-label {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.calendar-weekday {
+  display: grid;
+  place-items: center;
+  height: 26px;
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 9.5px;
+  letter-spacing: .04em;
+}
+
+.calendar-day {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-xs);
+  color: var(--kubo-carbon);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+}
+
+.calendar-day:hover {
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+}
+
+.calendar-day.is-outside {
+  color: var(--admin-faint);
+}
+
+.calendar-day.is-today {
+  box-shadow: inset 0 0 0 1px var(--admin-border-strong);
+  font-weight: 650;
+}
+
+.calendar-day.is-selected {
+  background: var(--kubo-carbon);
+  color: var(--kubo-ivory);
+  font-weight: 650;
+}
+
+.calendar-day.is-selected:hover {
+  background: var(--kubo-carbon);
+}
+
+.calendar-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--admin-border);
+}
+
+/* ---------- Listado ---------- */
+
+.expense-row {
+  cursor: pointer;
+}
+
+.receipt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+}
+
+.receipt-chip.has-receipt {
+  color: var(--kubo-carbon);
+  font-weight: 500;
+}
+
+.expense-concept-cell {
+  display: grid;
+  gap: 2px;
+}
+
+.expense-concept-cell strong {
+  font-family: var(--font-kubo-sans);
+  font-weight: 550;
+}
+
+.expense-concept-cell span {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+}
+
+.expense-total-cell {
+  font-family: var(--font-kubo-sans);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mobile-data-card .expense-mobile-top,
+.mobile-data-card .expense-mobile-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-data-card.expense-card {
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 6px;
+  padding: var(--space-4);
+  min-height: 0;
+}
+
+/* Pattern único mobile — 4 filas SIEMPRE en el mismo orden/alineación, tanto en Gastos como en
+   Compras pendientes (ver ExpenseList.svelte / PendingPurchaseList.svelte):
+   1) .expense-mobile-top      → fecha/prioridad (izq.) + monto (der.)
+   2) .expense-mobile-concept  → concepto/nombre
+   3) .expense-mobile-meta     → categoría · destino
+   4) .expense-mobile-bottom   → medio/cantidad (izq.) + comprobante/estado (der.)
+   Ninguna fila se omite según el contenido — así todas las tarjetas miden lo mismo. */
+.expense-mobile-top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.expense-mobile-date {
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+}
+
+.expense-mobile-total {
+  font-family: var(--font-kubo-sans);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.expense-mobile-concept {
+  overflow: hidden;
+  color: var(--kubo-carbon);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.expense-mobile-meta {
+  overflow: hidden;
+  color: var(--admin-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+/* ---------- Empty / no-results ---------- */
+
+.list-empty-panel {
+  display: grid;
+  place-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+}
+
+.list-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: var(--kubo-ivory);
+  background: var(--kubo-carbon);
+  clip-path: polygon(0 18%, 68% 0, 100% 20%, 100% 82%, 32% 100%, 0 80%);
+}
+
+.list-empty-panel h3 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -.01em;
+}
+
+.list-empty-panel p {
+  margin: 0;
+  max-width: 380px;
+  color: var(--admin-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* ---------- Modal genérico (Exportar / confirmar eliminación) ---------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(20 20 20 / .38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: overlay-in var(--motion-normal) var(--motion-ease) both;
+}
+
+.modal-panel {
+  width: min(480px, 100%);
+  max-height: min(88vh, 640px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--admin-canvas);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 70px rgb(20 20 20 / .28);
+  animation: panel-in var(--motion-modal) var(--motion-ease) both;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex: 0 0 auto;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+.modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.modal-body p {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--admin-border);
+}
+
+.modal-footer-meta {
+  flex-basis: 100%;
+  margin-right: auto;
+  overflow: hidden;
+  color: var(--admin-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+}
+
+/* Mobile: acciones de cualquier modal apiladas a todo ancho, con el botón primario arriba
+   (column-reverse invierte el orden visual sin tocar el DOM — Cancelar sigue yendo primero en el
+   markup por convención de foco/tab-order). Cubre PendingPurchaseForm y los diálogos de
+   confirmación genéricos, que no tienen el bloque de total de ExpenseForm. También ajusta el
+   padding lateral (~16px) y safe-area del header/body/footer del popup — colocado después de sus
+   reglas base a propósito, misma razón que `.modal-panel--form`.
+   Umbral 639px: en tablet (640–1023) el footer sigue con acciones a la derecha, no apiladas. */
+@media (max-width: 639px) {
+  .modal-header {
+    padding: max(var(--space-4), env(safe-area-inset-top)) 16px var(--space-4);
+  }
+
+  .modal-body {
+    padding: var(--space-4) 16px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: var(--space-4) 16px max(var(--space-4), env(safe-area-inset-bottom));
+  }
+
+  .modal-footer > .primary-button,
+  .modal-footer > .secondary-button,
+  .modal-footer > .danger-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 41px;
+  padding: 0 16px;
+  color: var(--kubo-red);
+  background: var(--admin-canvas);
+  border: 1px solid color-mix(in srgb, var(--kubo-red) 40%, var(--admin-border-strong));
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background-color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+.danger-button:hover {
+  background: color-mix(in srgb, var(--kubo-red) 7%, transparent);
+  border-color: var(--kubo-red);
+}
+
+/* ---------- Feedback (toast discreto, aria-live) ---------- */
+
+.expenses-feedback {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px var(--space-4);
+  background: var(--kubo-carbon);
+  border-radius: var(--radius-sm);
+  color: var(--kubo-ivory);
+  box-shadow: var(--shadow-hover);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 500;
+  animation: feedback-in var(--motion-normal) var(--motion-ease) both;
+}
+
+@keyframes feedback-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1279px) {
+  .expenses-overview .expenses-summary,
+  .purchases-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .expenses-overview .summary-metric:nth-child(2n),
+  .purchases-summary .summary-metric:nth-child(2n) {
+    border-left: 1px solid var(--admin-border);
+  }
+
+  .expenses-overview .summary-metric:nth-child(2n+1),
+  .purchases-summary .summary-metric:nth-child(2n+1) {
+    border-left: 0;
+  }
+
+  .expenses-overview .summary-metric:nth-child(n+3),
+  .purchases-summary .summary-metric:nth-child(n+3) {
+    border-top: 1px solid var(--admin-border);
+  }
+}
+
+@media (max-width: 1023px) {
+  .expenses-toolbar {
+    row-gap: var(--space-3);
+  }
+}
+
+@media (max-width: 767px) {
+  .expenses-overview .expenses-summary,
+  .purchases-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .overview-chart-section {
+    padding: var(--space-4);
+  }
+
+  .expenses-toolbar {
+    padding: var(--space-3);
+  }
+
+  .toolbar-search {
+    flex-basis: 100%;
+  }
+
+  .period-control {
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .toolbar-actions .primary-button,
+  .toolbar-actions .secondary-button {
+    flex: 1 1 0;
+  }
+
+  /* FloatingPanel se convierte en bottom sheet — mismo mecanismo para Popover/Combobox/Calendar,
+     así ninguno queda recortado ni se sale del viewport en mobile. */
+  .floating-panel-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 130;
+    background: rgb(20 20 20 / .3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: overlay-in var(--motion-normal) var(--motion-ease) both;
+  }
+
+  .floating-panel {
+    position: fixed !important;
+    top: auto !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-height: 82vh !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    animation: drawer-in-bottom var(--motion-panel) var(--motion-ease) both;
+  }
+
+  /* El Combobox NUNCA debe volverse un panel gigante en mobile — a diferencia de Popover/Calendar
+     (que sí necesitan más alto), su lista es corta y compacta: tope propio bien por debajo del
+     82vh genérico de arriba, calculado sobre el visualViewport real (dvh ya lo aproxima sin JS
+     extra) para que quepa sobre el teclado virtual sin sentirse como otro modal. */
+  .combobox-panel {
+    max-height: min(50dvh, 320px) !important;
+  }
+
+  .combobox-panel,
+  .period-panel {
+    padding-bottom: var(--space-5);
+  }
+
+  /* El Modal (.modal-backdrop/.modal-panel) es un popup centrado en cualquier breakpoint — su
+     tamaño para <1024px vive en `@media (max-width: 1023px)` de la sección "Tamaños de Modal" más
+     arriba. No confundir con el FloatingPanel de esta sección, que sí se convierte en bottom sheet
+     (Combobox/Popover/Calendar) porque cuelga de un trigger puntual, no es un diálogo modal. */
+
+  .expenses-feedback {
+    right: var(--space-4);
+    left: var(--space-4);
+    bottom: var(--space-4);
+    justify-content: center;
+  }
+
+  .expenses-tabs {
+    gap: var(--space-4);
+  }
+
+  /* Chart horizontal en mobile: label / barra / valor en tres líneas apiladas por fila — evita
+     comprimir el nombre de categoría o el monto en una sola línea angosta, sin scroll horizontal. */
+  .chart-row {
+    grid-template-columns: 1fr;
+    grid-template-areas: "label" "track" "value";
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .chart-row-label {
+    grid-area: label;
+  }
+
+  .chart-row-track {
+    grid-area: track;
+  }
+
+  .chart-row-value {
+    grid-area: value;
+    text-align: left;
+  }
+
+  .overview-chart-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .overview-chart-meta {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+@media (max-width: 420px) {
+  .expenses-overview .expenses-summary,
+  .purchases-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .expenses-overview .summary-metric,
+  .purchases-summary .summary-metric {
+    border-left: 0 !important;
+    border-top: 1px solid var(--admin-border);
+  }
+
+  .expenses-overview .summary-metric:first-child,
+  .purchases-summary .summary-metric:first-child {
+    border-top: 0;
+  }
+
+  .radio-group {
+    gap: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conditional-fields,
+  .expenses-feedback,
+  .floating-panel,
+  .floating-panel-backdrop,
+  .modal-panel,
+  .modal-backdrop,
+  .chart-bar-fill,
+  .priority-bar-fill,
+  .stock-bar-fill {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* =========================================================
+   Producción → Materiales (MaterialsWorkspace.svelte y afines)
+   Reutiliza primitives ya validadas por Finanzas → Gastos (.expenses-toolbar, .expenses-tabs,
+   .expenses-feedback, .status-chip, .field/.field-row, .modal-*, .drawer-*, .table-shell,
+   .mobile-data-card, .list-empty-panel, .summary-metric) — ver comentarios puntuales donde aplica.
+   Solo se define acá lo que es realmente nuevo: header simple, resumen 4-métricas propio, swatch
+   de color, celdas de material/stock y la barra de stock.
+   ========================================================= */
+
+.materials-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.materials-header .page-heading {
+  margin-bottom: 0;
+}
+
+.materials-header-actions {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 639px) {
+  .materials-header-actions {
+    width: 100%;
+  }
+
+  .materials-header-actions .primary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ---------- Resumen operativo (4 métricas, misma superficie Connected Bento) ---------- */
+
+.materials-overview {
+  margin-bottom: var(--space-4);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+.materials-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 1279px) {
+  .materials-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .materials-summary .summary-metric:nth-child(2n) {
+    border-left: 1px solid var(--admin-border);
+  }
+
+  .materials-summary .summary-metric:nth-child(2n+1) {
+    border-left: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .materials-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .materials-summary .summary-metric {
+    border-left: 0 !important;
+    border-top: 1px solid var(--admin-border);
+  }
+
+  .materials-summary .summary-metric:first-child {
+    border-top: 0;
+  }
+}
+
+/* ---------- Secciones (En uso / Stock / Perfiles): un solo borde exterior por sección (.panel),
+   header con divisor interno (.panel-header, ya existe en el dashboard) — nunca card-dentro-de-card. ---------- */
+
+.materials-section {
+  margin-bottom: var(--space-4);
+}
+
+.materials-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.panel-header-meta {
+  margin-top: 2px;
+}
+
+/* ---------- Swatch de color (referencia visual de inventario, nunca el resultado exacto impreso) ---------- */
+
+.material-swatch {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--admin-border-strong);
+  border-radius: var(--radius-xs);
+}
+
+.material-swatch.is-empty {
+  background:
+    linear-gradient(45deg, transparent 46%, var(--admin-border-strong) 46%, var(--admin-border-strong) 54%, transparent 54%),
+    var(--admin-canvas);
+}
+
+/* ---------- Celdas del listado ---------- */
+
+.material-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.material-name-cell-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.material-name-cell-text strong {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.material-name-cell-text span {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+}
+
+.material-stock-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.material-stock-cell strong {
+  font-family: var(--font-kubo-mono);
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--kubo-carbon);
+}
+
+.material-stock-cell span {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 11.5px;
+}
+
+.material-row {
+  cursor: pointer;
+}
+
+/* ---------- Tarjeta mobile ---------- */
+
+/* `.mobile-data-card` por defecto es una fila (`display:flex`, sin `flex-direction`) pensada para
+   listas de 2 columnas simples (texto a la izquierda, valor a la derecha) — con esa fila, los 4
+   elementos de esta tarjeta (top/meta/meta/bottom) se comprimían uno junto a otro en vez de
+   apilarse, y el `overflow:hidden`/`text-overflow:ellipsis` global de `.mobile-data-card span`
+   (pensado para esa misma fila de 2 columnas) truncaba el texto con "…" aunque hubiera espacio de
+   sobra debajo. Selector con 2 clases > especificidad de la regla base, sin tocarla para no
+   romper otras listas que sí quieren esa fila comprimida. */
+.mobile-data-card.material-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.mobile-data-card.material-card .material-card-meta {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+.material-card-top,
+.material-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.material-card-top .material-name-cell {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.material-card-top .material-stock-cell {
+  flex: 0 0 auto;
+}
+
+/* Nombre del material: hasta 2 líneas en vez de truncar con "…" (spec responsive). */
+.material-card-top .material-name-cell strong {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+.material-card-meta {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+}
+
+/* ---------- Barra de stock (spec §19: track carbón tenue, fill carbón; rojo solo crítico/atención) ---------- */
+
+.stock-bar-track {
+  position: relative;
+  height: 6px;
+  background: color-mix(in srgb, var(--kubo-carbon) 7%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stock-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  background: var(--kubo-carbon);
+  transition: width var(--motion-panel) var(--motion-ease);
+}
+
+.stock-bar-fill.is-low,
+.stock-bar-fill.is-out {
+  background: var(--kubo-red);
+}
+
+/* ---------- Estados derivados (nuevos modificadores de la primitive .status-chip global) ---------- */
+
+.status-chip.status-in-stock {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 26%, var(--kubo-ivory));
+}
+
+.status-chip.status-low-stock {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+}
+
+.status-chip.status-low-stock::before {
+  background: var(--kubo-red);
+}
+
+.status-chip.status-out-of-stock {
+  color: var(--kubo-red);
+  background: color-mix(in srgb, var(--kubo-red) 9%, var(--kubo-ivory));
+}
+
+.status-chip.status-out-of-stock::before {
+  background: var(--kubo-red);
+}
+
+.status-chip.status-evaluation {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 15%, var(--kubo-ivory));
+}
+
+.status-chip.status-inactive {
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, var(--kubo-ivory));
+}
+
+.status-chip.status-commercial,
+.status-chip.status-internal,
+.status-chip.status-both {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+}
+
+.status-chip.status-sealed {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+}
+
+.status-chip.status-open {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 20%, transparent);
+}
+
+.status-chip.status-empty {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 12%, transparent);
+}
+
+.status-chip.status-empty::before {
+  background: var(--kubo-red);
+}
+
+.status-chip.status-discarded {
+  color: var(--admin-faint);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, transparent);
+}
+
+/* ---------- Detalle de perfil (vista dentro del mismo workspace, sin ruta/persistencia propia:
+   ver comentario en MaterialDetail.svelte) ---------- */
+
+.material-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-3);
+  padding: 0;
+  color: var(--admin-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 12.5px;
+  font-weight: 550;
+  transition: color var(--dur-hover) ease;
+}
+
+.material-detail-back:hover {
+  color: var(--kubo-carbon);
+}
+
+.material-detail-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.material-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.material-detail-heading .material-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-xs);
+}
+
+.material-detail-title h1 {
+  margin: 0 0 2px;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+.material-detail-title p {
+  margin: 0;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+}
+
+.material-detail-sku {
+  margin: 4px 0 0;
+  color: var(--admin-faint);
+  font-size: 11px;
+}
+
+.material-detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.material-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 639px) {
+  .material-detail-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .material-detail-actions .primary-button,
+  .material-detail-actions .secondary-button {
+    flex: 1 1 calc(50% - var(--space-2) / 2);
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* ---------- Perfil de impresión: fabricante vs. validado KUBO, lado a lado en desktop ---------- */
+
+.print-profile-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+@media (max-width: 1023px) {
+  .print-profile-columns {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* Aire interno consistente para los 4 tabpanels del detalle de Materiales (Resumen, Inventario,
+   Perfil de impresión, Compras): .panel por sí sola no trae padding (la clase se comparte con
+   cards de bento que manejan su propio espaciado), así que sin este modificador el contenido
+   queda pegado al borde exterior. */
+.material-detail-panel {
+  padding: var(--space-5);
+}
+
+@media (max-width: 767px) {
+  .material-detail-panel {
+    padding: var(--space-4);
+  }
+}
+
+.value-empty {
+  color: var(--admin-faint);
+}
+
+/* ========== HERRAMIENTAS — CALCULADORA DE PRECIOS ========== */
+
+.calc-page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
+  .calc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calc-config {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.calc-result-col {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .calc-result-col {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+
+.calc-section-body {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+@media (max-width: 767px) {
+  .calc-section-body {
+    padding: var(--space-4);
+  }
+}
+
+.calc-section-hint {
+  margin: -4px 0 0;
+}
+
+.calc-row {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--kubo-carbon) 2.4%, transparent);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+}
+
+.calc-row + .calc-row {
+  margin-top: 0;
+}
+
+.calc-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calc-row-index {
+  font-family: var(--font-kubo-mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--admin-muted);
+}
+
+.calc-profile-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 6px var(--space-4);
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--admin-canvas);
+  border-radius: var(--radius-sm);
+}
+
+.calc-profile-meta dt {
+  margin: 0;
+  color: var(--admin-faint);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.calc-profile-meta dd {
+  margin: 0;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+}
+
+.calc-add-row-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 41px;
+  padding: 0 16px;
+  color: var(--kubo-carbon);
+  background: transparent;
+  border: 1.5px dashed var(--admin-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease;
+}
+
+.calc-add-row-button:hover {
+  background: color-mix(in srgb, var(--kubo-carbon) 4%, transparent);
+  border-color: var(--kubo-carbon);
+}
+
+.calc-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.calc-slider-row input[type='range'] {
+  flex: 1 1 auto;
+  accent-color: var(--kubo-red);
+}
+
+.calc-slider-number {
+  width: 90px;
+  flex: 0 0 auto;
+}
+
+.calc-incomplete-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: var(--space-4);
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+  border: 1px solid color-mix(in srgb, var(--kubo-red) 22%, var(--admin-border));
+  border-radius: var(--radius-sm);
+}
+
+.calc-incomplete-banner ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.calc-result-primary {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.calc-result-primary-label {
+  margin: 0 0 4px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.calc-result-primary-value {
+  margin: 0;
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-mono);
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.calc-result-primary-sub {
+  margin: 4px 0 0;
+  color: var(--admin-muted);
+  font-size: 12.5px;
+}
+
+.calc-result-section {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.calc-result-section:last-child {
+  border-bottom: none;
+}
+
+.calc-result-section-title {
+  margin: 0 0 var(--space-3);
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.calc-result-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 4px 0;
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  color: var(--admin-muted);
+}
+
+.calc-result-row span:last-child {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-mono);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.calc-result-row.is-total {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--admin-border-strong);
+  color: var(--kubo-carbon);
+  font-weight: 650;
+}
+
+.calc-result-row.is-total span:last-child {
+  font-size: 15px;
+}
+
+.calc-breakdown {
+  display: grid;
+  gap: 10px;
+}
+
+.calc-breakdown-row {
+  display: grid;
+  grid-template-columns: 108px 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.calc-breakdown-label {
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 12px;
+}
+
+.calc-breakdown-track {
+  height: 8px;
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.calc-breakdown-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.calc-breakdown-fill-carbon { background: var(--kubo-carbon); }
+.calc-breakdown-fill-blue { background: color-mix(in srgb, var(--kubo-blue) 78%, var(--kubo-carbon)); }
+.calc-breakdown-fill-red { background: var(--kubo-red); }
+
+.calc-breakdown-value {
+  color: var(--kubo-carbon);
+  font-family: var(--font-kubo-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .calc-breakdown-row {
+    grid-template-columns: 88px 1fr auto;
+  }
+
+  .calc-result-primary-value {
+    font-size: 28px;
+  }
+}
+
+/* "Supuestos y costos avanzados" — <details>/<summary> nativo: mismo lenguaje visual que .panel/
+   .panel-header, sin reimplementar un acordeón propio. Plegado por defecto para que el uso normal
+   solo muestre finalidad/cantidad/impresora/tiempo/material/gramos/trabajo manual/margen/IGV. */
+.calc-advanced-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 58px;
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  list-style: none;
+}
+
+.calc-advanced-summary::-webkit-details-marker {
+  display: none;
+}
+
+.calc-advanced-summary:focus-visible {
+  outline: 2px solid var(--kubo-red);
+  outline-offset: -2px;
+}
+
+.calc-advanced-summary-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--kubo-carbon);
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.calc-advanced-chevron {
+  transition: transform var(--dur-hover) ease;
+}
+
+.calc-advanced[open] .calc-advanced-chevron {
+  transform: rotate(90deg);
+}
+
+.calc-advanced > .calc-section-body {
+  border-top: 1px solid var(--admin-border);
+}
+
+/* ---------- Calculadora → Historial (spec §36) ----------
+   Reutiliza primitives ya validadas por Finanzas → Gastos: .expenses-tabs, .toolbar-search,
+   .table-shell, .mobile-data-card, .mobile-list, .list-empty-panel, .modal-*, .danger-button,
+   .icon-button, .secondary-button, .field-hint. Solo se define acá lo que es nuevo: el toolbar de
+   Buscar + filtro de finalidad, las celdas propias de la fila (nombre/fecha-finalidad/precio) y el
+   grupo de acciones (Abrir/Duplicar/Copiar/Eliminar). */
+
+.calc-history-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.calc-history-toolbar .toolbar-search {
+  flex: 1 1 240px;
+}
+
+.calc-history-purpose-filter {
+  flex: 0 0 auto;
+  min-width: 200px;
+}
+
+.calc-history-delete-all {
+  margin-left: auto;
+}
+
+.calc-history-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calc-history-meta-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12.5px;
+  color: var(--admin-muted);
+}
+
+.calc-history-price-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calc-history-price-unit {
+  margin-left: 4px;
+  color: var(--admin-muted);
+  font-family: var(--font-kubo-sans);
+  font-size: 11px;
+}
+
+.calc-history-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calc-history-actions-mobile {
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--admin-border);
+}
+
+.calc-history-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-height: 0;
+  text-align: left;
+  cursor: default;
+}
+
+.calc-history-card:hover {
+  background: transparent;
+}
+
+.calc-history-card-meta,
+.calc-history-card-bottom span {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+.calc-history-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.calc-history-card-meta {
+  color: var(--admin-muted);
+  font-size: 12.5px;
+}
+
+.calc-history-card-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 639px) {
+  .calc-history-delete-all {
+    margin-left: 0;
+  }
+
+  .calc-history-purpose-filter {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* ========== PRODUCCIÓN — EQUIPOS ========== */
+
+/* Estados derivados propios de Equipos (mismos modificadores de la primitive .status-chip global,
+   spec docs/specs/admin-equipment-printers-spec.md §13). "Revisar" reutiliza .status-review ya
+   existente (misma semántica visual). */
+
+.status-chip.status-active {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 26%, var(--kubo-ivory));
+}
+
+.status-chip.status-maintenance {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+}
+
+.status-chip.status-maintenance::before {
+  background: var(--kubo-red);
+}
+
+.status-chip.status-retired {
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 5%, var(--kubo-ivory));
+}
+
+.status-chip.status-up-to-date {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 26%, var(--kubo-ivory));
+}
+
+.status-chip.status-upcoming {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 15%, var(--kubo-ivory));
+}
+
+.status-chip.status-attention {
+  color: var(--kubo-red);
+  background: color-mix(in srgb, var(--kubo-red) 9%, var(--kubo-ivory));
+}
+
+.status-chip.status-compatible {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 26%, var(--kubo-ivory));
+}
+
+.status-chip.status-not-recommended {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+}
+
+.status-chip.status-not-recommended::before {
+  background: var(--kubo-red);
+}
+
+/* Estados derivados propios de Impresiones (mismos modificadores de la primitive .status-chip
+   global) — 'success' y 'cancelled' reutilizan status-success/status-cancelled ya definidos arriba. */
+.status-chip.status-partial {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-red) 8%, var(--kubo-ivory));
+}
+
+.status-chip.status-failed {
+  color: var(--kubo-red);
+  background: color-mix(in srgb, var(--kubo-red) 12%, var(--kubo-ivory));
+}
+
+.status-chip.status-failed::before {
+  background: var(--kubo-red);
+}
+
+/* ---------- Compatibilidad resumida (tab Resumen) ---------- */
+
+.compatibility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.compatibility-chip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 8px 10px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-xs);
+}
+
+.compatibility-chip-label {
+  font-family: var(--font-kubo-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.compatibility-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-xs);
+}
+
+.compatibility-note p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.compatibility-note p + p {
+  margin-top: 4px;
+}
+
+/* ---------- Alertas de mantenimiento (tab Mantenimiento) ---------- */
+
+.maintenance-alert-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.maintenance-alert-row {
+  display: grid;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-xs);
+}
+
+.maintenance-alert-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.maintenance-alert-main strong {
+  font-family: var(--font-kubo-sans);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.maintenance-alert-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: 4px;
+}
+
+.maintenance-source-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--admin-muted);
+  background: color-mix(in srgb, var(--kubo-carbon) 6%, transparent);
+  font-family: var(--font-kubo-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.maintenance-source-tag.is-manufacturer {
+  color: var(--kubo-carbon);
+  background: color-mix(in srgb, var(--kubo-blue) 20%, transparent);
+}
+
+.maintenance-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--kubo-carbon) 8%, transparent);
+  overflow: hidden;
+}
+
+.maintenance-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--kubo-carbon);
+}
+
+@media (max-width: 639px) {
+  .compatibility-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .maintenance-alert-main {
+    justify-content: space-between;
+  }
+}

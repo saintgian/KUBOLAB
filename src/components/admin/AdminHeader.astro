@@ -1,0 +1,81 @@
+---
+import KuboIcon from '../ui/KuboIcon.astro';
+import AdminSearch from './AdminSearch.svelte';
+import AdminPeriodSelector from './AdminPeriodSelector.svelte';
+
+// El topbar es marfil/blanco, así que el símbolo móvil usa la variante Principal
+// (carbón + rojo), nunca la InversaColor (pensada para fondos oscuros como el sidebar).
+const symbolLogoSrc = '/assets/logos/KUBO_Principal_Simbolo.svg';
+
+const notifications = [
+  { title: 'Nuevo pedido #KUBO-1048', meta: 'María Fernanda R. · hace 12 min' },
+  { title: 'Cotización enviada', meta: 'Estación de trabajo modular · hace 2 h' },
+  { title: 'Producción completada', meta: 'Organizador M1 · hace 3 h' },
+  { title: 'Nuevo cliente registrado', meta: 'jorgeh@correo.com · hace 5 h' },
+];
+---
+
+<header class="admin-topbar">
+  <div class="topbar-left">
+    <button
+      class="icon-button sidebar-toggle mobile-only"
+      type="button"
+      data-sidebar-toggle
+      aria-label="Abrir navegación"
+      aria-expanded="false"
+      aria-controls="admin-sidebar-drawer"
+    >
+      <KuboIcon name="menu" size={20} />
+    </button>
+
+    <div class="mobile-brand mobile-only" aria-hidden="true">
+      <img src={symbolLogoSrc} alt="" class="mobile-brand-logo" width="26" height="30" />
+    </div>
+  </div>
+
+  <div class="topbar-actions">
+    <AdminSearch client:load />
+
+    <AdminPeriodSelector client:load />
+
+    <div class="popover-wrap" data-popover>
+      <button
+        class="icon-button notification-button"
+        type="button"
+        data-popover-trigger
+        aria-expanded="false"
+        aria-label="Notificaciones, 4 nuevas"
+      >
+        <KuboIcon name="bell" size={19} />
+        <span class="notification-dot">{notifications.length}</span>
+      </button>
+      <div class="mini-popover notification-popover" data-popover-panel hidden>
+        <p class="popover-title">Notificaciones <span class="demo-chip">DATOS DEMO</span></p>
+        <div class="notification-list">
+          {notifications.map((item) => (
+            <div class="notification-item">
+              <strong>{item.title}</strong>
+              <small>{item.meta}</small>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="popover-wrap user-menu-wrap" data-popover>
+      <button class="topbar-user" type="button" data-popover-trigger aria-expanded="false">
+        <span class="avatar">AA</span>
+        <span class="topbar-user-copy">
+          <strong>Admin KUBO</strong>
+          <small>Administrador</small>
+        </span>
+        <KuboIcon name="nav-arrow-down" size={15} />
+      </button>
+
+      <div class="mini-popover user-popover" data-popover-panel hidden>
+        <button type="button">Perfil</button>
+        <button type="button">Ajustes</button>
+      </div>
+    </div>
+  </div>
+</header>
