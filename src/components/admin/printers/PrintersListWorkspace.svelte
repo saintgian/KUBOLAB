@@ -9,6 +9,7 @@
    */
   import KuboIcon from '../../ui/KuboIcon.svelte';
   import PrinterProfileForm from './PrinterProfileForm.svelte';
+  import { withBase } from '../../../lib/url';
   import { DEMO_MAINTENANCE_RULES, DEMO_PRINTERS } from '../../../data/admin/printers.mock';
   import { PRINTER_STATUS_OPTIONS, MAINTENANCE_STATUS_OPTIONS, optionLabel } from '../../../data/admin/printers.constants';
   import type { PrinterProfile, PrinterProfileFormValues, MaintenanceEvent } from '../../../data/admin/printers.types';
@@ -125,7 +126,7 @@
             <td><span class={`status-chip status-${row.maintenanceStatus}`}>{optionLabel(MAINTENANCE_STATUS_OPTIONS, row.maintenanceStatus)}</span></td>
             <td>{row.printer.counters.lastPrintAt ? formatDateLong(row.printer.counters.lastPrintAt) : 'Sin actividad registrada'}</td>
             <td>
-              <a class="text-link" href={`/admin/produccion/equipos/${row.printer.id}/`}>Ver detalle</a>
+              <a class="text-link" href={withBase(`/admin/produccion/equipos/${row.printer.id}/`)}>Ver detalle</a>
             </td>
           </tr>
         {/each}
@@ -135,7 +136,7 @@
 
   <div class="mobile-list mobile-only">
     {#each rows as row (row.printer.id)}
-      <a class="mobile-data-card" href={`/admin/produccion/equipos/${row.printer.id}/`}>
+      <a class="mobile-data-card" href={withBase(`/admin/produccion/equipos/${row.printer.id}/`)}>
         <div class="material-card-top">
           <strong>{row.printer.internalName}</strong>
           <span class={`status-chip status-${row.printer.status}`}>{optionLabel(PRINTER_STATUS_OPTIONS, row.printer.status)}</span>

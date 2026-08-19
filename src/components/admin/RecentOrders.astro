@@ -2,6 +2,7 @@
 import KuboIcon from '../ui/KuboIcon.astro';
 import StatusBadge from './StatusBadge.astro';
 import { recentOrders } from '../../data/admin/dashboard.mock';
+import { withBase } from '../../lib/url';
 
 function detailFor(order: (typeof recentOrders)[number]) {
   return JSON.stringify({
@@ -13,7 +14,7 @@ function detailFor(order: (typeof recentOrders)[number]) {
       { label: 'Total', value: order.total },
       { label: 'Estado', value: order.status },
     ],
-    actionHref: '/admin/comercio/pedidos/',
+    actionHref: withBase('/admin/comercio/pedidos/'),
     actionLabel: 'Ver todos los pedidos',
   });
 }
@@ -24,7 +25,7 @@ function detailFor(order: (typeof recentOrders)[number]) {
     <div>
       <h2>Pedidos recientes</h2>
     </div>
-    <a class="text-link" href="/admin/comercio/pedidos/">Ver todos <KuboIcon name="nav-arrow-right" size={14} /></a>
+    <a class="text-link" href={withBase('/admin/comercio/pedidos/')}>Ver todos <KuboIcon name="nav-arrow-right" size={14} /></a>
   </header>
 
   <div class="table-shell desktop-table">

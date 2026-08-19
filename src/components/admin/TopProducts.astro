@@ -1,6 +1,7 @@
 ---
 import KuboIcon from '../ui/KuboIcon.astro';
 import { topProducts } from '../../data/admin/dashboard.mock';
+import { withBase } from '../../lib/url';
 ---
 
 <article class="panel panel-products reveal" style="--delay: 220ms">
@@ -8,7 +9,7 @@ import { topProducts } from '../../data/admin/dashboard.mock';
     <div>
       <h2>Más vendidos</h2>
     </div>
-    <a class="text-link" href="/admin/comercio/productos/">Ver productos <KuboIcon name="nav-arrow-right" size={14} /></a>
+    <a class="text-link" href={withBase('/admin/comercio/productos/')}>Ver productos <KuboIcon name="nav-arrow-right" size={14} /></a>
   </header>
 
   <div class="product-list">

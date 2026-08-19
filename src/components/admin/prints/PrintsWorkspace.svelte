@@ -13,6 +13,7 @@
   import PrintRecordForm from './PrintRecordForm.svelte';
   import PrintDetailModal from './PrintDetailModal.svelte';
   import PrintDeleteConfirm from './PrintDeleteConfirm.svelte';
+  import { withBase } from '../../../lib/url';
   import PrintsToolbar from './PrintsToolbar.svelte';
   import PrintHistoryTable from './PrintHistoryTable.svelte';
   import { DEMO_PRINTERS, DEMO_MAINTENANCE_RULES, DEMO_MAINTENANCE_EVENTS } from '../../../data/admin/printers.mock';
@@ -255,7 +256,7 @@
     <span class="list-empty-icon" aria-hidden="true"><KuboIcon name="server" size={22} /></span>
     <h3>No hay impresoras registradas.</h3>
     <p>Registra una impresora en Producción → Equipos antes de comenzar a registrar impresiones.</p>
-    <a class="primary-button" href="/admin/produccion/equipos/">Ir a Equipos</a>
+    <a class="primary-button" href={withBase('/admin/produccion/equipos/')}>Ir a Equipos</a>
   </div>
 {:else}
   <section class="materials-overview reveal" style="--delay: 40ms" aria-label="Perfil de la impresora">

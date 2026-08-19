@@ -11,6 +11,7 @@ import '../../styles/admin-core.css';
 import '../../styles/admin-dashboard.css';
 import KuboConstructionGrid from '../../components/ui/KuboConstructionGrid.astro';
 import AdminLoginForm from '../../components/admin/login/AdminLoginForm.svelte';
+import { withBase } from '../../lib/url';
 ---
 
 <!doctype html>
@@ -30,7 +31,7 @@ import AdminLoginForm from '../../components/admin/login/AdminLoginForm.svelte';
 
         <div class="login-brand-top reveal">
           <img
-            src="/assets/logos/KUBO_InversaColor_Horizontal.svg"
+            src={withBase('/assets/logos/KUBO_InversaColor_Horizontal.svg')}
             alt=""
             class="login-logo"
             width="140"
@@ -48,7 +49,7 @@ import AdminLoginForm from '../../components/admin/login/AdminLoginForm.svelte';
       <main class="login-form-panel">
         <header class="login-mobile-header reveal">
           <img
-            src="/assets/logos/KUBO_Monocroma_Carbon_Horizontal.svg"
+            src={withBase('/assets/logos/KUBO_Monocroma_Carbon_Horizontal.svg')}
             alt="KUBO"
             class="login-mobile-logo"
             width="120"

@@ -18,6 +18,7 @@
    */
   import { onMount } from 'svelte';
   import { navGroups, isActiveHref } from '../../data/admin/navigation';
+  import { withBase } from '../../lib/url';
   import KuboIcon from '../ui/KuboIcon.svelte';
 
   interface Props {
@@ -26,8 +27,9 @@
 
   let { currentPath }: Props = $props();
 
-  const logoSrc = '/assets/logos/KUBO_InversaColor_Horizontal.svg';
-  const symbolLogoSrc = '/assets/logos/KUBO_InversaColor_Simbolo.svg';
+  const dashboardHref = withBase('/admin/');
+  const logoSrc = withBase('/assets/logos/KUBO_InversaColor_Horizontal.svg');
+  const symbolLogoSrc = withBase('/assets/logos/KUBO_InversaColor_Simbolo.svg');
 
   let mobileOpen = $state(false);
   let asideEl: HTMLElement | undefined = $state();
@@ -135,7 +137,7 @@
   aria-label="Navegación administrativa"
 >
   <div class="sidebar-brand">
-    <a href="/admin/" class="brand-link" aria-label="KUBO Admin — inicio">
+    <a href={dashboardHref} class="brand-link" aria-label="KUBO Admin — inicio">
       <img src={logoSrc} alt="KUBO" class="brand-logo brand-logo-horizontal" width="126" height="32" />
       <img src={symbolLogoSrc} alt="" class="brand-logo brand-logo-symbol" aria-hidden="true" width="30" height="30" />
     </a>

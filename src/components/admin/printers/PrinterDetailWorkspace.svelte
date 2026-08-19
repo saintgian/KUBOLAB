@@ -11,6 +11,7 @@
   import PrinterProfileForm from './PrinterProfileForm.svelte';
   import MaintenanceEventForm from './MaintenanceEventForm.svelte';
   import PrinterCostingForm from './PrinterCostingForm.svelte';
+  import { withBase } from '../../../lib/url';
   import { DEMO_MAINTENANCE_RULES, DEMO_PRINTERS, MAINTENANCE_COMPONENTS } from '../../../data/admin/printers.mock';
   import {
     MAINTENANCE_ACTION_OPTIONS,
@@ -154,10 +155,10 @@
     <span class="list-empty-icon" aria-hidden="true"><KuboIcon name="server" size={22} /></span>
     <h3>Impresora no encontrada.</h3>
     <p>Puede que el enlace sea antiguo o que los datos locales se hayan limpiado.</p>
-    <a class="primary-button" href="/admin/produccion/equipos/">Volver a Equipos</a>
+    <a class="primary-button" href={withBase('/admin/produccion/equipos/')}>Volver a Equipos</a>
   </div>
 {:else}
-  <a class="material-detail-back" href="/admin/produccion/equipos/">
+  <a class="material-detail-back" href={withBase('/admin/produccion/equipos/')}>
     <KuboIcon name="nav-arrow-left" size={14} />
     Volver a Equipos
   </a>
