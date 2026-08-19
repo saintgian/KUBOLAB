@@ -115,7 +115,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 					const chars = Array.from(text).map((ch) => {
 						const span = document.createElement('span');
 						span.className = 'char';
-						span.textContent = ch === ' ' ? ' ' : ch;
+						span.textContent = ch;
 						span.style.opacity = '0';
 						line.appendChild(span);
 						return span;
